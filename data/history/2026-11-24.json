@@ -23,7 +23,8 @@
       "url": "https://data.ornn.com/markets",
       "as_of": "2026-11-22",
       "confidence": "high",
-      "note": "日 +0.69%，近 1 月 -7.62%。挂牌口径：gpurentalprices 11 月均值 3.51（+6.4%）；Compute Census 中位 3.90（11/16）；getdeploying 中位 3.95（11/23）。超大云按需：AWS 起 6.88（getdeploying 11/23）；Azure 12.29（CC，10/16）。neocloud：Lium.io 1.30、Massed Compute 2.73、Crusoe 3.90，12/1 起 4.50。"
+      "note": "日 +0.69%，近 1 月 -7.62%。挂牌口径：gpurentalprices 11 月均值 3.51（+6.4%）；Compute Census 中位 3.90（11/16）；getdeploying 中位 3.95（11/23）。超大云按需：AWS 起 6.88（getdeploying 11/23）；Azure 12.29（CC，10/16）。neocloud：Lium.io 1.30、Massed Compute 2.73、Crusoe 3.90，12/1 起 4.50。",
+      "gpu_key": "H100"
     },
     {
       "region": "US",
@@ -36,7 +37,8 @@
       "url": "https://data.ornn.com/markets",
       "as_of": "2026-11-22",
       "confidence": "high",
-      "note": "日 -3.50%，近 1 月 -0.17%。挂牌口径：gpurentalprices 5.06（+7.2%）；CC 中位 4.80。超大云按需：Azure 13.78（9/21）。neocloud：Beam 2.09、GMI 3.20、Crusoe 4.29，12/1 起 5.40（+26%）。"
+      "note": "日 -3.50%，近 1 月 -0.17%。挂牌口径：gpurentalprices 5.06（+7.2%）；CC 中位 4.80。超大云按需：Azure 13.78（9/21）。neocloud：Beam 2.09、GMI 3.20、Crusoe 4.29，12/1 起 5.40（+26%）。",
+      "gpu_key": "H200"
     },
     {
       "region": "US",
@@ -49,7 +51,8 @@
       "url": "https://data.ornn.com/markets",
       "as_of": "2026-11-22",
       "confidence": "high",
-      "note": "近 1 月 -5.32%。挂牌口径：gpurentalprices 8.40（+8.6%）；CC 中位 7.40（较 11/09 +7.2%）。超大云按需：AWS p6-b200 每台 $113.93/h，折每卡 14.24（idlefy，约 10/31）；GCP 16.11（9/28）。neocloud：DeepInfra 3.69。"
+      "note": "近 1 月 -5.32%。挂牌口径：gpurentalprices 8.40（+8.6%）；CC 中位 7.40（较 11/09 +7.2%）。超大云按需：AWS p6-b200 每台 $113.93/h，折每卡 14.24（idlefy，约 10/31）；GCP 16.11（9/28）。neocloud：DeepInfra 3.69。",
+      "gpu_key": "B200"
     },
     {
       "region": "US",
@@ -62,7 +65,8 @@
       "url": "https://data.ornn.com/markets",
       "as_of": "2026-11-22",
       "confidence": "high",
-      "note": "近 1 月 +1.51%。挂牌口径：gpurentalprices 10.16（+10.4%）；CC 中位 9.50。超大云按需：AWS 17.80（CC，11/07）。neocloud：DeepInfra 5.89、Crusoe 8.96，12/1 起 9.90。"
+      "note": "近 1 月 +1.51%。挂牌口径：gpurentalprices 10.16（+10.4%）；CC 中位 9.50。超大云按需：AWS 17.80（CC，11/07）。neocloud：DeepInfra 5.89、Crusoe 8.96，12/1 起 9.90。",
+      "gpu_key": "B300"
     },
     {
       "region": "US",
@@ -75,7 +79,8 @@
       "url": "https://computecensus.com/gpu-prices/",
       "as_of": "2026-11-16",
       "confidence": "medium",
-      "note": "无 Ornn 成交指数，代表价为 CC 挂牌中位。超大云按需：Azure 27.04（9/14）。neocloud：GMI 8.00。"
+      "note": "无 Ornn 成交指数，代表价为 CC 挂牌中位。超大云按需：Azure 27.04（9/14）。neocloud：GMI 8.00。",
+      "gpu_key": "GB200"
     },
     {
       "region": "US",
@@ -88,7 +93,8 @@
       "url": "https://data.ornn.com/markets",
       "as_of": "2026-11-22",
       "confidence": "high",
-      "note": "近 1 月 -9.17%。挂牌口径：gpurentalprices 1.93（+2.8%）；CC 中位 1.75。超大云按需：GCP 约 5.07。neocloud：Vast.ai 约 0.53。"
+      "note": "近 1 月 -9.17%。挂牌口径：gpurentalprices 1.93（+2.8%）；CC 中位 1.75。超大云按需：GCP 约 5.07。neocloud：Vast.ai 约 0.53。",
+      "gpu_key": "A100"
     },
     {
       "region": "US",
@@ -101,7 +107,8 @@
       "url": "https://gpurentalprices.com/gpu-price-index/2026-11",
       "as_of": "2026-11-23",
       "confidence": "medium",
-      "note": "无 Ornn 成交指数，代表价为 gpurentalprices 挂牌值（+7.2%，同口径 -0.3%）；CC 中位 2.99。超大云按需：Azure 6–12。neocloud：RunPod 2.39、TensorWave 约 1.71。"
+      "note": "无 Ornn 成交指数，代表价为 gpurentalprices 挂牌值（+7.2%，同口径 -0.3%）；CC 中位 2.99。超大云按需：Azure 6–12。neocloud：RunPod 2.39、TensorWave 约 1.71。",
+      "gpu_key": "MI300X"
     },
     {
       "region": "CN",
@@ -114,7 +121,8 @@
       "url": "https://suanli.mysteel.com/",
       "as_of": "2026-11-19",
       "confidence": "medium",
-      "note": "单卡按需 19.14，单卡包月 19.62；成渝 10 月单卡按需 12.90（月报）；H100 整机 IB 组网五年闭口 9.5 万元/台/月（11/17、11/19）。Ornn $2.91 按 6.7111 折约 ¥19.53，与国内价格基本持平。本期换用 Mysteel 数据源，不能与上期直接比较涨跌。"
+      "note": "单卡按需 19.14，单卡包月 19.62；成渝 10 月单卡按需 12.90（月报）；H100 整机 IB 组网五年闭口 9.5 万元/台/月（11/17、11/19）。Ornn $2.91 按 6.7111 折约 ¥19.53，与国内价格基本持平。本期换用 Mysteel 数据源，不能与上期直接比较涨跌。",
+      "gpu_key": "H100"
     },
     {
       "region": "CN",
@@ -127,7 +135,8 @@
       "url": "https://suanli.mysteel.com/",
       "as_of": "2026-11-19",
       "confidence": "medium",
-      "note": "单卡按需价，无包月报价。"
+      "note": "单卡按需价，无包月报价。",
+      "gpu_key": "H800"
     },
     {
       "region": "CN",
@@ -140,7 +149,8 @@
       "url": "https://suanli.mysteel.com/",
       "as_of": "2026-11-19",
       "confidence": "medium",
-      "note": "单卡按需 7.64，包月 6.37。"
+      "note": "单卡按需 7.64，包月 6.37。",
+      "gpu_key": "H20"
     },
     {
       "region": "CN",
@@ -153,7 +163,8 @@
       "url": "https://suanli.mysteel.com/",
       "as_of": "2026-11-19",
       "confidence": "medium",
-      "note": "单卡按需 8.84，包月 8.12。"
+      "note": "单卡按需 8.84，包月 8.12。",
+      "gpu_key": "A100"
     },
     {
       "region": "CN",
@@ -166,7 +177,8 @@
       "url": "https://suanli.mysteel.com/",
       "as_of": "2026-11-19",
       "confidence": "medium",
-      "note": "单卡按需 7.05，包月 6.52。"
+      "note": "单卡按需 7.05，包月 6.52。",
+      "gpu_key": "A800"
     },
     {
       "region": "CN",
@@ -179,7 +191,8 @@
       "url": "https://suanli.mysteel.com/",
       "as_of": "2026-11-19",
       "confidence": "medium",
-      "note": "单卡按需 1.98，包月 1.77；4090D 按需 1.88。"
+      "note": "单卡按需 1.98，包月 1.77；4090D 按需 1.88。",
+      "gpu_key": "RTX 4090"
     },
     {
       "region": "CN",
@@ -192,7 +205,8 @@
       "url": "https://suanli.mysteel.com/",
       "as_of": "2026-11-19",
       "confidence": "low",
-      "note": "成渝单卡包月价 0.63 元，明显偏低，与整机月租（月租 1.3–1.4 万元/台/月，年签 1.5–1.6 万元/台/月，11/12）不在一个量级。Mysteel 未说明原因，可能对应某个特定规格。"
+      "note": "成渝单卡包月价 0.63 元，明显偏低，与整机月租（月租 1.3–1.4 万元/台/月，年签 1.5–1.6 万元/台/月，11/12）不在一个量级。Mysteel 未说明原因，可能对应某个特定规格。",
+      "gpu_key": "910B"
     },
     {
       "region": "CN",
@@ -205,7 +219,8 @@
       "url": "https://computeindex.net/gpu/shengteng-910c",
       "as_of": "2026-11-06",
       "confidence": "low",
-      "note": "单卡按需价；Mysteel 11/12 报 560T 风冷整机年签 5.4 万元/台/月。"
+      "note": "单卡按需价；Mysteel 11/12 报 560T 风冷整机年签 5.4 万元/台/月。",
+      "gpu_key": "910C"
     }
   ],
   "purchase": [
@@ -219,7 +234,9 @@
       "url": "https://suanli.mysteel.com/a/26111911/E76C0459ADB8602B.html",
       "as_of": "2026-11-19",
       "confidence": "medium",
-      "note": "约 $103.6 万；同类现货 ¥677–696 万，国内组装期货 ¥630 万。与上期 ¥680 万相比 +2.2%，来源不同，仅供参考。"
+      "note": "约 $103.6 万；同类现货 ¥677–696 万，国内组装期货 ¥630 万。与上期 ¥680 万相比 +2.2%，来源不同，仅供参考。",
+      "gpu": "H200",
+      "cards": 8
     },
     {
       "region": "CN",
@@ -231,7 +248,9 @@
       "url": "https://wccftech.com/china-gray-market-prices-nvidia-8-gpu-h200-server-900000-600k-stranded-warehouses/",
       "as_of": "2026-11-16",
       "confidence": "low",
-      "note": "约 600 万元（约 $90 万），为一年前的 3 倍；单卡 $3–3.5 万；报道日期为约 11/16。"
+      "note": "约 600 万元（约 $90 万），为一年前的 3 倍；单卡 $3–3.5 万；报道日期为约 11/16。",
+      "gpu": "H200",
+      "cards": 8
     },
     {
       "region": "CN",
@@ -243,7 +262,9 @@
       "url": "https://suanli.mysteel.com/",
       "as_of": "2026-11-18",
       "confidence": "medium",
-      "note": "Mysteel 称较上月溢价约 13.7%。与上期 ¥335 万（tandiu，10/16）相比 +23.9%，来源不同，仅供参考。"
+      "note": "Mysteel 称较上月溢价约 13.7%。与上期 ¥335 万（tandiu，10/16）相比 +23.9%，来源不同，仅供参考。",
+      "gpu": "H100",
+      "cards": 8
     },
     {
       "region": "CN",
@@ -255,7 +276,9 @@
       "url": "https://www.36kr.com/p/4063602885039238",
       "as_of": "2026-11-19",
       "confidence": "low",
-      "note": "36 氪称某高端 8 卡机报价超 2000 万元（约 11/10）。"
+      "note": "36 氪称某高端 8 卡机报价超 2000 万元（约 11/10）。",
+      "gpu": null,
+      "cards": 0
     },
     {
       "region": "CN",
@@ -267,7 +290,9 @@
       "url": "https://suanli.mysteel.com/a/26111710/3565005219C6487D.html",
       "as_of": "2026-11-17",
       "confidence": "medium",
-      "note": "预计成交 ¥185–195 万；每台卡数未披露。"
+      "note": "预计成交 ¥185–195 万；每台卡数未披露。",
+      "gpu": "910C",
+      "cards": 0
     },
     {
       "region": "US",
@@ -279,7 +304,9 @@
       "url": "https://www.ancapex.io/b200-price",
       "as_of": "2026-11-10",
       "confidence": "medium",
-      "note": "同来源：American Compute 10 月报价 $36–47 万；来源日期为约 11/10。"
+      "note": "同来源：American Compute 10 月报价 $36–47 万；来源日期为约 11/10。",
+      "gpu": "B200",
+      "cards": 8
     },
     {
       "region": "US",
@@ -291,7 +318,9 @@
       "url": "https://itctshop.com/nvidia-h100-h200-b200-price/",
       "as_of": "2026-11-16",
       "confidence": "medium",
-      "note": "ITCT 称 B200 只按 8 卡平台出售；来源日期为约 11/16。"
+      "note": "ITCT 称 B200 只按 8 卡平台出售；来源日期为约 11/16。",
+      "gpu": "B200",
+      "cards": 8
     },
     {
       "region": "US",
@@ -303,7 +332,9 @@
       "url": "https://www.ancapex.io/b200-price",
       "as_of": "2026-11-10",
       "confidence": "medium",
-      "note": "笔记将 DGX B200 报价列在 HGX B200 一栏，来源为 ancapex（约 11/10）或 itctshop（约 11/16），未明确对应哪一个。"
+      "note": "笔记将 DGX B200 报价列在 HGX B200 一栏，来源为 ancapex（约 11/10）或 itctshop（约 11/16），未明确对应哪一个。",
+      "gpu": "B200",
+      "cards": 8
     },
     {
       "region": "US",
@@ -315,7 +346,9 @@
       "url": "https://www.ancapex.io/b300-price",
       "as_of": "2026-10-20",
       "confidence": "medium",
-      "note": "American Compute 10 月报价：单台 $49–52 万，批量 $40–45 万。"
+      "note": "American Compute 10 月报价：单台 $49–52 万，批量 $40–45 万。",
+      "gpu": "B300",
+      "cards": 8
     },
     {
       "region": "US",
@@ -327,7 +360,9 @@
       "url": "https://itctshop.com/nvidia-h100-h200-b200-price/",
       "as_of": "2026-11-16",
       "confidence": "medium",
-      "note": "来源日期为约 11/16。"
+      "note": "来源日期为约 11/16。",
+      "gpu": "H200",
+      "cards": 1
     },
     {
       "region": "US",
@@ -339,7 +374,9 @@
       "url": "https://itctshop.com/nvidia-h100-h200-b200-price/",
       "as_of": "2026-11-16",
       "confidence": "medium",
-      "note": "来源日期为约 11/16。"
+      "note": "来源日期为约 11/16。",
+      "gpu": "H100",
+      "cards": 1
     }
   ],
   "regulation": [
@@ -459,6 +496,50 @@
       "title": "算力价格对冲",
       "detail": "H100 成交价 $2.91，挂牌中位 $3.51–3.95，差距很大，且近 1 月两者走势相反。Ornn 指数已上 Bloomberg，并有 ICE 期货合约规格，长约方和 neocloud 可用来对冲基差。",
       "basis": "Ornn 成交指数，gpurentalprices、Compute Census、getdeploying 的挂牌中位价。"
+    }
+  ],
+  "routes": [
+    {
+      "route": "美国境内采购/转租",
+      "status": "open",
+      "since": "",
+      "note": "BIS 新规不约束美国境内数据中心；Crusoe 等 12/1 提价",
+      "url": "https://www.sidley.com/en/insights/newsupdates/2026/11/new-export-controls-on-advanced-chips-close-remote-compute-access-loopholes-five-key-takeaways"
+    },
+    {
+      "route": "海外机房 → 中资客户",
+      "status": "closed",
+      "since": "2026-11-19",
+      "note": "超 1200 万 TPP 需许可，无例外；存量业务宽限到 2027-02-17",
+      "url": "https://www.wilmerhale.com/en/insights/client-alerts/20261117-us-government-restricts-remote-access-to-advanced-ai-chips-and-formally-rescinds-the-ai-diffusion-rule"
+    },
+    {
+      "route": "英伟达 H200 → 中国大陆",
+      "status": "closed",
+      "since": "2026-11-17",
+      "note": "英伟达停发；北京也未放行大规模进口",
+      "url": "https://news.qq.com/rain/a/20261118A05V4Q00"
+    },
+    {
+      "route": "东南亚四国 + 巴西 进货",
+      "status": "license",
+      "since": "2026-11-19",
+      "note": "印尼/马来/新加坡/泰国/巴西需许可，美资企业按月报告可豁免",
+      "url": "https://www.sidley.com/en/insights/newsupdates/2026/11/new-export-controls-on-advanced-chips-close-remote-compute-access-loopholes-five-key-takeaways"
+    },
+    {
+      "route": "经第三方转租给受限企业",
+      "status": "closed",
+      "since": "2026-11-18",
+      "note": "英伟达合同：转租超 50% 给受限企业即断供",
+      "url": "https://finance.sina.com.cn/tech/roll/2026-11-18/doc-inizcmfi4886810.shtml"
+    },
+    {
+      "route": "中国境内国产卡（昇腾）",
+      "status": "open",
+      "since": "",
+      "note": "国资项目要求国产芯片；西部部分省份电费补贴最高 50%（二手来源）",
+      "url": "https://www.huxiu.com/article/4907264.html"
     }
   ]
 }

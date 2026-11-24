@@ -1,0 +1,208 @@
+{
+  "note": "历史走势回填：看板 2026-11-24 起每日存档，此前的点来自各来源公布的月度数值；标记 derived 的点由来源给出的环比反推。",
+  "series": [
+    {
+      "gpu": "H100",
+      "kind": "成交指数",
+      "source": "Ornn OCPI",
+      "points": [
+        {
+          "date": "2026-08-31",
+          "value": 2.97,
+          "source": "Ornn 月末值",
+          "url": "https://data.ornn.com/markets/h100-sxm",
+          "derived": false
+        },
+        {
+          "date": "2026-09-30",
+          "value": 2.71,
+          "source": "Ornn 月末值",
+          "url": "https://data.ornn.com/markets/h100-sxm",
+          "derived": false
+        },
+        {
+          "date": "2026-10-26",
+          "value": 3.17,
+          "source": "Ornn 结算值",
+          "url": "https://data.ornn.com/markets/h100-sxm",
+          "derived": false
+        },
+        {
+          "date": "2026-11-22",
+          "value": 2.91,
+          "source": "Ornn 结算值",
+          "url": "https://data.ornn.com/",
+          "derived": false
+        }
+      ]
+    },
+    {
+      "gpu": "H100",
+      "kind": "挂牌月均",
+      "source": "gpurentalprices",
+      "points": [
+        {
+          "date": "2026-10-31",
+          "value": 3.3,
+          "source": "由 11 月均值 3.51 与环比 +6.4% 反推",
+          "url": "https://gpurentalprices.com/gpu-price-index/2026-11",
+          "derived": true
+        },
+        {
+          "date": "2026-11-23",
+          "value": 3.51,
+          "source": "11 月 1–23 日均值",
+          "url": "https://gpurentalprices.com/gpu-price-index/2026-11",
+          "derived": false
+        }
+      ]
+    },
+    {
+      "gpu": "H100",
+      "kind": "挂牌中位",
+      "source": "Compute Census",
+      "points": [
+        {
+          "date": "2025-10-01",
+          "value": 1.95,
+          "source": "Compute Census 一年前中位",
+          "url": "https://computecensus.com/gpu-prices/",
+          "derived": false
+        },
+        {
+          "date": "2026-11-16",
+          "value": 3.9,
+          "source": "Compute Census 中位",
+          "url": "https://computecensus.com/gpu-prices/",
+          "derived": false
+        }
+      ]
+    },
+    {
+      "gpu": "H200",
+      "kind": "挂牌月均",
+      "source": "gpurentalprices",
+      "points": [
+        {
+          "date": "2026-10-31",
+          "value": 4.72,
+          "source": "由 5.06 与 +7.2% 反推",
+          "url": "https://gpurentalprices.com/gpu-price-index/2026-11",
+          "derived": true
+        },
+        {
+          "date": "2026-11-23",
+          "value": 5.06,
+          "source": "11 月均值",
+          "url": "https://gpurentalprices.com/gpu-price-index/2026-11",
+          "derived": false
+        }
+      ]
+    },
+    {
+      "gpu": "H200",
+      "kind": "成交指数",
+      "source": "Ornn OCPI",
+      "points": [
+        {
+          "date": "2026-11-22",
+          "value": 5.79,
+          "source": "Ornn 结算值",
+          "url": "https://data.ornn.com/",
+          "derived": false
+        }
+      ]
+    },
+    {
+      "gpu": "B200",
+      "kind": "挂牌指数",
+      "source": "SemiAnalysis（经 shattered.io）",
+      "points": [
+        {
+          "date": "2026-06-30",
+          "value": 4.47,
+          "source": "由 9 月 $8.01 与三个月 +79% 反推",
+          "url": "https://shattered.io/nvidia-b200-cloud-price-79-percent-surge-2026/",
+          "derived": true
+        },
+        {
+          "date": "2026-09-30",
+          "value": 8.01,
+          "source": "SemiAnalysis 指数",
+          "url": "https://shattered.io/nvidia-b200-cloud-price-79-percent-surge-2026/",
+          "derived": false
+        }
+      ]
+    },
+    {
+      "gpu": "B200",
+      "kind": "挂牌月均",
+      "source": "gpurentalprices",
+      "points": [
+        {
+          "date": "2026-10-31",
+          "value": 7.73,
+          "source": "由 8.40 与 +8.6% 反推",
+          "url": "https://gpurentalprices.com/gpu-price-index/2026-11",
+          "derived": true
+        },
+        {
+          "date": "2026-11-23",
+          "value": 8.4,
+          "source": "11 月均值",
+          "url": "https://gpurentalprices.com/gpu-price-index/2026-11",
+          "derived": false
+        }
+      ]
+    },
+    {
+      "gpu": "B200",
+      "kind": "成交指数",
+      "source": "Ornn OCPI",
+      "points": [
+        {
+          "date": "2026-11-22",
+          "value": 9.08,
+          "source": "Ornn 结算值",
+          "url": "https://data.ornn.com/",
+          "derived": false
+        }
+      ]
+    },
+    {
+      "gpu": "B300",
+      "kind": "挂牌月均",
+      "source": "gpurentalprices",
+      "points": [
+        {
+          "date": "2026-10-31",
+          "value": 9.2,
+          "source": "由 10.16 与 +10.4% 反推",
+          "url": "https://gpurentalprices.com/gpu-price-index/2026-11",
+          "derived": true
+        },
+        {
+          "date": "2026-11-23",
+          "value": 10.16,
+          "source": "11 月均值",
+          "url": "https://gpurentalprices.com/gpu-price-index/2026-11",
+          "derived": false
+        }
+      ]
+    },
+    {
+      "gpu": "B300",
+      "kind": "成交指数",
+      "source": "Ornn OCPI",
+      "points": [
+        {
+          "date": "2026-11-22",
+          "value": 11.46,
+          "source": "Ornn 结算值",
+          "url": "https://data.ornn.com/",
+          "derived": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,207 +1,424 @@
 <!doctype html>
 <html lang="zh-CN">
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex">
 <title>算力行情台</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700&family=JetBrains+Mono:wght@400;600&display=swap">
 <style>
-/* Layout: 交易终端式的单列行情台 —— 要点条 → 租赁价梯 (美/中) → 购买价表 → 监管时间线 → 机会 */
+/* Layout: 交易台 —— 关键价格 → 通道红绿灯 → 走势 → 中美价差梯 → 回本计算器 → 明细(折叠) */
 :root{
-  --bg:#f3f5f7; --panel:#ffffff; --ink:#16202b; --muted:#5d6b7a; --line:#dde3ea;
-  --us:#2357c6; --cn:#c2352b; --accent:#0f6b6b;
-  --warn:#b26a00; --good:#1f7a3d; --low-bg:#fbefe0; --mid-bg:#e9f0fb; --hi-bg:#e3f3e8;
+  --bg:#f4f5f3; --panel:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#7a7974; --line:#e3e3df; --grid:#ecece8;
+  --us:#2a78d6; --cn:#eb6834; --s3:#1baf7a;
+  --good:#0ca30c; --warn:#c98500; --bad:#d03b3b;
+  --good-bg:#e6f4e6; --warn-bg:#fbf1dc; --bad-bg:#f9e3e3;
   --f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
-  --f-num:"JetBrains Mono",ui-monospace,"SFMono-Regular",Menlo,monospace;
+  --f-num:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#0f141a; --panel:#161d25; --ink:#e6ebf1; --muted:#93a1b0; --line:#2a3440;
-  --us:#6f9bff; --cn:#ff7b6e; --accent:#4cc1bd; --warn:#f0a840; --good:#5cc983;
-  --low-bg:#3a2a14; --mid-bg:#1b2a44; --hi-bg:#163222; color-scheme:dark}}
+  --bg:#121211; --panel:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#8f8e86; --line:#2f2f2c; --grid:#262624;
+  --us:#3987e5; --cn:#d95926; --s3:#199e70; --good:#0ca30c; --warn:#fab219; --bad:#e66767;
+  --good-bg:#16301a; --warn-bg:#3a2c10; --bad-bg:#3a1a1a; color-scheme:dark}}
 :root[data-theme="dark"]{
-  --bg:#0f141a; --panel:#161d25; --ink:#e6ebf1; --muted:#93a1b0; --line:#2a3440;
-  --us:#6f9bff; --cn:#ff7b6e; --accent:#4cc1bd; --warn:#f0a840; --good:#5cc983;
-  --low-bg:#3a2a14; --mid-bg:#1b2a44; --hi-bg:#163222; color-scheme:dark}
+  --bg:#121211; --panel:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#8f8e86; --line:#2f2f2c; --grid:#262624;
+  --us:#3987e5; --cn:#d95926; --s3:#199e70; --good:#0ca30c; --warn:#fab219; --bad:#e66767;
+  --good-bg:#16301a; --warn-bg:#3a2c10; --bad-bg:#3a1a1a; color-scheme:dark}
 *{box-sizing:border-box}
-body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.6;margin:0}
-.wrap{max-width:1180px;margin:0 auto;padding-block:24px 48px;
-  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
-  display:grid;gap:20px}
-header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:8px 24px}
-h1{font-size:24px;margin:0;letter-spacing:.02em}
-h1 small{font-family:var(--f-num);font-size:12px;color:var(--muted);font-weight:400;margin-left:8px}
+html,body{margin:0}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:14px;line-height:1.55}
+.wrap{max-width:1200px;margin:0 auto;padding-block:20px 48px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:grid;gap:16px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:4px 20px}
+h1{font-size:22px;margin:0}
 .meta{color:var(--muted);font-size:12px;font-family:var(--f-num)}
-h2{font-size:15px;margin:0 0 12px;display:flex;align-items:center;gap:10px;text-wrap:balance}
-h2 .tag{font-size:11px;color:var(--muted);font-weight:400;letter-spacing:.06em}
-section.panel{background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:16px 18px;min-width:0}
-.heads{margin:0;padding-left:18px;display:grid;gap:6px}
-.heads li::marker{color:var(--accent)}
-.grid2{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,520px),1fr));gap:20px}
-.ladder{display:grid;gap:2px}
-.row{display:grid;grid-template-columns:92px 1fr 78px;align-items:center;gap:10px;padding:6px 0;border-bottom:1px dashed var(--line)}
-.row:last-child{border-bottom:0}
-.gpu{font-weight:500;font-size:13px}
-.px{font-family:var(--f-num);font-variant-numeric:tabular-nums;text-align:right;font-weight:600}
-.track{position:relative;height:18px}
-.track .axis{position:absolute;left:0;right:0;top:8px;height:2px;background:var(--line)}
-.track .rng{position:absolute;top:5px;height:8px;border-radius:4px;opacity:.28}
-.track .dot{position:absolute;top:3px;width:12px;height:12px;border-radius:50%;margin-left:-6px;border:2px solid var(--panel)}
-.us .rng,.us .dot{background:var(--us)} .cn .rng,.cn .dot{background:var(--cn)}
-.sub{grid-column:1/-1;font-size:12px;color:var(--muted);display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:-2px}
-.sub a{color:var(--muted)}
-a{color:var(--accent)} a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.conf{font-size:11px;padding:0 6px;border-radius:3px;white-space:nowrap}
-.conf.high{background:var(--hi-bg);color:var(--good)} .conf.medium{background:var(--mid-bg);color:var(--us)} .conf.low{background:var(--low-bg);color:var(--warn)}
-.scale{display:flex;justify-content:space-between;font-family:var(--f-num);font-size:11px;color:var(--muted);margin:0 88px 4px 102px}
-.flag{font-size:12px;color:var(--warn);margin-top:10px}
+.num{font-family:var(--f-num);font-variant-numeric:tabular-nums}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;min-width:0}
+h2{font-size:15px;margin:0;text-wrap:balance}
+.ph{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:6px 16px;margin-bottom:12px}
+.ph p{margin:2px 0 0;color:var(--ink2);font-size:12px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:12px}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:grid;gap:2px;min-width:0}
+.kpi .lb{font-size:12px;color:var(--ink2)}
+.kpi .v{white-space:nowrap;font-family:var(--f-num);font-size:28px;font-weight:600;line-height:1.2;font-variant-numeric:tabular-nums}
+.kpi .v small{font-size:13px;font-weight:400;color:var(--ink2);margin-left:4px}
+.kpi .d{font-size:12px;font-family:var(--f-num)}
+.kpi .src{font-size:11px;color:var(--muted)}
+.kpi .src a{color:var(--muted)}
+.up{color:var(--bad)} .down{color:var(--good)} .flat{color:var(--ink2)}
+.routes{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,340px),1fr));gap:8px}
+.rt{display:grid;grid-template-columns:auto 1fr;gap:2px 10px;align-items:start;padding:8px 10px;border-radius:6px;border:1px solid var(--line)}
+.pill{grid-row:span 2;font-size:12px;font-weight:600;padding:2px 8px;border-radius:10px;white-space:nowrap;display:inline-flex;gap:4px;align-items:center;margin-top:1px}
+.pill.open{background:var(--good-bg);color:var(--good)} .pill.license{background:var(--warn-bg);color:var(--warn)} .pill.closed{background:var(--bad-bg);color:var(--bad)}
+.rt b{font-weight:500}
+.rt span.n{font-size:12px;color:var(--ink2)}
+.rt a{color:inherit;text-decoration:none} .rt a:hover b{text-decoration:underline}
+.tabs{display:flex;gap:4px;flex-wrap:wrap}
+.tabs button{font:inherit;font-size:12px;font-family:var(--f-num);background:transparent;color:var(--ink2);border:1px solid var(--line);border-radius:5px;padding:3px 10px;cursor:pointer}
+.tabs button[aria-pressed="true"]{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+button:focus-visible,a:focus-visible,input:focus-visible{outline:2px solid var(--us);outline-offset:2px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 14px;font-size:12px;color:var(--ink2);margin-top:6px}
+.legend i{display:inline-block;width:14px;height:3px;border-radius:2px;vertical-align:middle;margin-right:5px}
+.legend i.dot{width:9px;height:9px;border-radius:50%}
+.legend i.hollow{width:9px;height:9px;border-radius:50%;background:transparent!important;border:2px solid var(--ink2)}
+.legend i.rng{height:8px;width:18px;opacity:.35}
+svg{display:block;width:100%;height:auto;overflow:visible}
+svg text{fill:var(--muted);font-family:var(--f-num);font-size:11px}
+svg .lbl{fill:var(--ink);font-family:var(--f-body);font-size:12px}
+svg .val{fill:var(--ink);font-size:12px;font-weight:600}
+svg .gl{stroke:var(--grid);stroke-width:1}
+svg .ax{stroke:var(--line);stroke-width:1}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,540px),1fr));gap:16px}
+.calc{display:flex;flex-wrap:wrap;gap:10px 24px;align-items:center;font-size:12px;color:var(--ink2);margin-bottom:10px}
+.calc label{display:flex;align-items:center;gap:8px}
+.calc input[type=range]{width:130px;accent-color:var(--us)}
+.calc output{font-family:var(--f-num);color:var(--ink);min-width:52px}
+.formula{font-family:var(--f-num);font-size:12px;color:var(--ink2);background:var(--bg);border-radius:6px;padding:6px 10px;margin:0 0 10px;overflow-x:auto;white-space:nowrap}
+.note{font-size:12px;color:var(--muted);margin:8px 0 0}
+details.panel>summary{cursor:pointer;font-weight:600;font-size:14px;list-style:none;display:flex;justify-content:space-between;gap:12px}
+details.panel>summary::after{content:"展开";font-weight:400;font-size:12px;color:var(--muted)}
+details.panel[open]>summary::after{content:"收起"}
+details.panel[open]>summary{margin-bottom:12px}
+.heads{margin:0;padding-left:18px;display:grid;gap:4px}
 .tbl{overflow-x:auto}
-table{border-collapse:collapse;width:100%;min-width:720px;font-size:13px}
-th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
-th{font-size:11px;color:var(--muted);font-weight:500;letter-spacing:.06em}
-td.num{font-family:var(--f-num);font-variant-numeric:tabular-nums;text-align:right;white-space:nowrap}
-.reg{display:grid;gap:0}
-.ev{display:grid;grid-template-columns:96px 1fr;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+table{border-collapse:collapse;width:100%;min-width:700px;font-size:13px}
+th,td{text-align:left;padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-size:11px;color:var(--muted);font-weight:500}
+td.n{font-family:var(--f-num);text-align:right;white-space:nowrap}
+td a{color:var(--ink2)}
+.ev{display:grid;grid-template-columns:90px 1fr;gap:10px;padding:8px 0;border-bottom:1px solid var(--line)}
 .ev:last-child{border-bottom:0}
-.ev .d{font-family:var(--f-num);font-size:12px;color:var(--muted)}
-.ev h3{font-size:14px;margin:0 0 4px;display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.ev p{margin:2px 0;max-width:80ch}
-.ev .imp{color:var(--muted)}
-.chip{white-space:nowrap;font-size:11px;font-weight:500;padding:1px 7px;border-radius:10px;border:1px solid currentColor}
-.chip.US{color:var(--us)} .chip.CN{color:var(--cn)} .chip.Other{color:var(--muted)}
-.chip.tighten{color:var(--cn);} .chip.loosen{color:var(--good)} .chip.neutral{color:var(--muted)}
+.ev p{margin:2px 0;color:var(--ink2);font-size:13px;max-width:80ch}
+.tag{font-size:11px;padding:0 6px;border-radius:3px;border:1px solid currentColor;margin-right:6px;white-space:nowrap}
+.tag.US{color:var(--us)} .tag.CN{color:var(--cn)} .tag.Other{color:var(--muted)}
 .opps{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:14px}
-.opp h3{font-size:14px;margin:0 0 4px}
-.opp p{margin:0} .opp .b{font-size:12px;color:var(--muted);margin-top:4px}
-.toggle{display:flex;gap:6px}
-.toggle button{font:inherit;font-size:12px;background:transparent;color:var(--muted);border:1px solid var(--line);border-radius:4px;padding:2px 10px;cursor:pointer}
-.toggle button[aria-pressed="true"]{color:var(--ink);border-color:var(--ink)}
-footer{color:var(--muted);font-size:12px}
-@media (max-width:560px){.row{grid-template-columns:76px 1fr 64px}.scale{margin:0 72px 4px 86px}.ev{grid-template-columns:1fr;gap:2px}}
-@media (prefers-reduced-motion:no-preference){.dot{transition:left .3s}}
+.opps h3{font-size:13px;margin:0 0 2px} .opps p{margin:0;font-size:13px;color:var(--ink2)}
+#tip{position:fixed;pointer-events:none;z-index:20;background:var(--ink);color:var(--panel);font-size:12px;line-height:1.45;padding:6px 9px;border-radius:5px;max-width:280px;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+#tip b{font-family:var(--f-num)}
+@media (max-width:560px){.kpi .v{font-size:24px}.ev{grid-template-columns:1fr;gap:0}}
 </style>
 
 <div class="wrap">
   <header>
-    <h1>算力行情台<small>GPU 租赁 · 采购 · 监管</small></h1>
+    <h1>算力行情台</h1>
     <div class="meta" id="meta">加载中…</div>
   </header>
 
-  <section class="panel">
-    <h2>今日要点</h2>
-    <ul class="heads" id="heads"></ul>
+  <section class="kpis" id="kpis" aria-label="关键价格"></section>
+
+  <section class="panel" aria-labelledby="h-routes">
+    <div class="ph"><div><h2 id="h-routes">通道状态</h2><p>哪些买卖路线现在能走</p></div></div>
+    <div class="routes" id="routes"></div>
   </section>
 
-  <div class="grid2">
-    <section class="panel">
-      <h2>美国租赁价 <span class="tag">USD / GPU·小时 · 点=代表价 条=区间</span></h2>
-      <div id="rent-us"></div>
+  <div class="two">
+    <section class="panel" aria-labelledby="h-trend">
+      <div class="ph">
+        <div><h2 id="h-trend">美国租金走势</h2><p>USD / GPU·小时。空心点为按来源环比反推</p></div>
+        <div class="tabs" id="trend-tabs" role="group" aria-label="选择型号"></div>
+      </div>
+      <div id="trend"></div>
+      <div class="legend" id="trend-legend"></div>
+      <p class="note" id="trend-note"></p>
     </section>
-    <section class="panel">
-      <h2>中国租赁价 <span class="tag" id="cn-tag">USD / 卡·小时（按人民币中间价折算） · 与美国同一刻度</span></h2>
-      <div id="rent-cn"></div>
-      <p class="flag" id="cn-flag" hidden>国内云厂商（阿里云、AutoDL 等）的人民币报价还没接入，目前显示的是国际市场价折人民币，仅作参照。</p>
+
+    <section class="panel" aria-labelledby="h-spread">
+      <div class="ph"><div><h2 id="h-spread">进货价 → 售价梯</h2><p>USD / GPU·小时，中国价按中间价折算</p></div></div>
+      <div id="spread"></div>
+      <div class="legend">
+        <span><i class="rng" style="background:var(--us)"></i>美国 地板价 → 超大云按需</span>
+        <span><i class="dot" style="background:var(--us)"></i>美国代表价（成交指数优先）</span>
+        <span><i class="dot" style="background:var(--cn)"></i>中国国内租价</span>
+      </div>
     </section>
   </div>
 
-  <section class="panel">
-    <h2>购买价 <span class="tag">单卡 / 8 卡整机</span>
-      <span class="toggle" role="group" aria-label="地区筛选">
-        <button type="button" id="f-all" aria-pressed="true">全部</button>
-        <button type="button" id="f-CN" aria-pressed="false">中国</button>
-        <button type="button" id="f-US" aria-pressed="false">美国</button>
-      </span></h2>
-    <div class="tbl"><table>
-      <thead><tr><th>地区</th><th>型号</th><th>渠道</th><th style="text-align:right">价格</th><th style="text-align:right">≈ 每卡</th><th style="text-align:right">≈ 美元</th><th>说明</th><th>来源 · 日期</th></tr></thead>
-      <tbody id="buy"></tbody>
-    </table></div>
+  <section class="panel" aria-labelledby="h-pay">
+    <div class="ph"><div><h2 id="h-pay">买卡出租，多久回本</h2><p>拖动假设，柱子实时更新。虚线为 36 个月（常见折旧年限）</p></div></div>
+    <div class="calc">
+      <label for="util">利用率 <input type="range" id="util" min="30" max="100" step="5" value="70"><output id="util-o">70%</output></label>
+      <label for="opex">运营成本 <input type="range" id="opex" min="0" max="1" step="0.05" value="0.3"><output id="opex-o">$0.30</output></label>
+      <span>电力、机房、运维，按每卡每小时美元计，中国按汇率折算</span>
+    </div>
+    <p class="formula">回本月数 = 每卡价格 ÷ [ (租金 − 运营成本) × 730 小时 × 利用率 ]</p>
+    <div id="pay"></div>
+    <p class="note">租金用同地区同型号的代表价。未含资金成本、残值和网络设备；整机价按卡数平摊。</p>
   </section>
 
-  <section class="panel">
-    <h2>监管动态 <span class="tag">红=收紧 绿=放松</span></h2>
-    <div class="reg" id="reg"></div>
-  </section>
-
-  <section class="panel">
-    <h2>产业机会 <span class="tag">基于上方数据的判断，非投资建议</span></h2>
+  <details class="panel" open>
+    <summary>今日要点</summary>
+    <ul class="heads" id="heads"></ul>
+  </details>
+  <details class="panel">
+    <summary><span>监管动态（<span id="reg-n"></span> 条）</span></summary>
+    <div id="reg"></div>
+  </details>
+  <details class="panel">
+    <summary>采购价明细</summary>
+    <div class="tbl"><table><thead><tr><th>地区</th><th>型号</th><th>渠道</th><th style="text-align:right">价格</th><th style="text-align:right">每卡（美元）</th><th>来源 · 日期</th></tr></thead><tbody id="buy"></tbody></table></div>
+  </details>
+  <details class="panel">
+    <summary>租赁价明细</summary>
+    <div class="tbl"><table><thead><tr><th>地区</th><th>型号</th><th style="text-align:right">代表价</th><th style="text-align:right">地板</th><th style="text-align:right">最高</th><th>说明</th><th>来源 · 日期</th></tr></thead><tbody id="rent"></tbody></table></div>
+  </details>
+  <details class="panel">
+    <summary>机会判断</summary>
     <div class="opps" id="opps"></div>
-  </section>
-
-  <footer id="foot">每个数字都标了来源和日期。可信度：<span class="conf high">高</span> 指数或官方价目 · <span class="conf medium">中</span> 聚合站 · <span class="conf low">低</span> 二手或样本级报价。</footer>
+  </details>
+  <p class="note" id="foot">每个数字都标注了来源和日期，悬停图表可以查看。</p>
 </div>
+<div id="tip" hidden></div>
 
 <script>
 const $ = s => document.querySelector(s);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const CONF = {high:"高",medium:"中",low:"低"};
+const f2 = (v, d=2) => Number(v).toLocaleString("en-US",{minimumFractionDigits:d,maximumFractionDigits:d});
+const usd = (v, d=2) => "$" + f2(v, d);
+const pct = v => (v>0?"+":"") + f2(v*100,1) + "%";
 const REGION = {US:"美国",CN:"中国",Global:"全球",Other:"其他"};
-const DIR = {tighten:"收紧",loosen:"放松",neutral:"待观察"};
-const fmt = (v, d=2) => Number(v).toLocaleString("zh-CN",{minimumFractionDigits:d,maximumFractionDigits:d});
-function money(v, unit){
-  if (unit === "CNY") return v >= 1e4 ? "¥" + fmt(v/1e4, v>=1e6?0:1) + " 万" : "¥" + fmt(v,0);
-  return "$" + fmt(v, 0);
-}
-function perCard(item, v, unit){ return /8\s*卡/.test(item) ? money(v/8, unit) : "—"; }
+const KEYS = ["GB300","GB200","B300","B200","H200","H100","H800","H20","A100","A800","MI300X","MI355X","910C","910B","RTX 4090","RTX 5090"];
+const keyOf = s => { const u = String(s||"").toUpperCase().replace(/\s|昇腾/g,""); return KEYS.find(k => u.includes(k.replace(" ",""))) || null; };
+const SVGNS = "http://www.w3.org/2000/svg";
 
-function toUSD(r, fx){ return {...r, price:r.price/fx, low:r.low/fx, high:r.high/fx, cny:r}; }
-function ladder(rows, cls, sym, max){
-  if (!rows.length) return "<p class='meta'>暂无数据</p>";
-  const pos = v => (v / max * 100).toFixed(2) + "%";
-  const ticks = [0, max/2, max].map(t => sym + fmt(t, t<10?1:0));
-  return `<div class="scale"><span>${ticks[0]}</span><span>${ticks[1]}</span><span>${ticks[2]}</span></div>
-  <div class="ladder ${cls}">` + rows.map(r => `
-    <div class="row">
-      <div class="gpu">${esc(r.gpu)}</div>
-      <div class="track" title="${esc(r.gpu)}：${sym}${r.low} – ${sym}${r.high}">
-        <div class="axis"></div>
-        <div class="rng" style="left:${pos(r.low)};width:calc(${pos(r.high)} - ${pos(r.low)} + 4px)"></div>
-        <div class="dot" style="left:${pos(r.price)}"></div>
-      </div>
-      <div class="px">${sym}${fmt(r.price)}</div>
-      <div class="sub"><span class="conf ${r.confidence}">${CONF[r.confidence]}</span>
-        <a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.source)}</a><span>${esc(r.as_of)}</span>
-        <span>区间 ${sym}${fmt(r.low)}–${fmt(r.high)}</span>${r.cny ? `<span>原价 ¥${fmt(r.cny.price)}（¥${fmt(r.cny.low)}–${fmt(r.cny.high)}）</span>` : ""}<span>${esc(r.note)}</span></div>
-    </div>`).join("") + "</div>";
+/* tooltip */
+const tip = $("#tip");
+document.addEventListener("pointermove", e => {
+  const t = e.target.closest?.("[data-tip]");
+  if (!t) { tip.hidden = true; return; }
+  tip.innerHTML = t.getAttribute("data-tip"); tip.hidden = false;
+  const w = tip.offsetWidth, h = tip.offsetHeight;
+  tip.style.left = Math.min(innerWidth - w - 8, e.clientX + 12) + "px";
+  tip.style.top = (e.clientY - h - 12 < 4 ? e.clientY + 16 : e.clientY - h - 12) + "px";
+});
+
+let D, BF, HIST = [], FX = null;
+
+function rentUSD(r){ return r.unit && r.unit.startsWith("CNY") ? (FX ? {...r, price:r.price/FX, low:r.low/FX, high:r.high/FX} : null) : r; }
+function rentBy(region, key){ return D.rental.find(r => r.region===region && (r.gpu_key||keyOf(r.gpu))===key); }
+function seriesFor(key){
+  const ss = (BF?.series||[]).filter(s => s.gpu===key).map(s => ({...s, points:[...s.points]}));
+  // 每日存档的代表价并入同来源序列
+  for (const h of HIST){
+    const r = h.rental?.find(x => x.region==="US" && (x.gpu_key||keyOf(x.gpu))===key);
+    if (!r) continue;
+    const kind = /ornn/i.test(r.source) ? "成交指数" : "看板代表价";
+    let s = ss.find(x => x.kind===kind);
+    if (!s){ s = {gpu:key, kind, source:r.source, points:[]}; ss.push(s); }
+    if (!s.points.some(p => p.date===r.as_of)) s.points.push({date:r.as_of, value:r.price, source:r.source+"（看板存档）", url:r.url});
+  }
+  ss.forEach(s => s.points.sort((a,b) => a.date.localeCompare(b.date)));
+  return ss.filter(s => s.points.length);
+}
+const KIND_COLOR = {"成交指数":"var(--us)","挂牌月均":"var(--cn)","挂牌中位":"var(--s3)","挂牌指数":"var(--s3)","看板代表价":"var(--s3)"};
+
+/* ---------- KPI tiles ---------- */
+function spark(points, color){
+  if (points.length < 2) return "";
+  const W=120,H=28, xs=points.map(p=>+new Date(p.date)), ys=points.map(p=>p.value);
+  const x0=Math.min(...xs), x1=Math.max(...xs), y0=Math.min(...ys)*0.95, y1=Math.max(...ys)*1.05;
+  const X=v=>(v-x0)/(x1-x0||1)*(W-6)+3, Y=v=>H-3-(v-y0)/(y1-y0||1)*(H-6);
+  const d = points.map((p,i)=>(i?"L":"M")+X(xs[i]).toFixed(1)+" "+Y(p.value).toFixed(1)).join(" ");
+  const l = points.at(-1);
+  return `<svg viewBox="0 0 ${W} ${H}" style="width:90px;height:28px;flex:none" aria-hidden="true"><path d="${d}" fill="none" stroke="${color}" stroke-width="2" stroke-linejoin="round"/><circle cx="${X(xs.at(-1))}" cy="${Y(l.value)}" r="3" fill="${color}"/></svg>`;
+}
+function kpi(label, value, unit, delta, deltaTxt, src, sparkHtml){
+  const cls = delta==null ? "flat" : delta>0.005 ? "up" : delta<-0.005 ? "down" : "flat";
+  return `<div class="kpi"><div class="lb">${label}</div>
+    <div style="display:flex;align-items:end;justify-content:space-between;gap:8px"><div class="v">${value}<small>${unit}</small></div>${sparkHtml||""}</div>
+    <div class="d ${cls}">${deltaTxt||"&nbsp;"}</div><div class="src">${src}</div></div>`;
+}
+function renderKPIs(){
+  const out = [];
+  for (const key of ["H100","B200"]){
+    const r = rentBy("US", key); if (!r) continue;
+    const all = seriesFor(key);
+    const multi = all.filter(x => x.points.length>1).sort((a,b) => b.points.at(-1).date.localeCompare(a.points.at(-1).date));
+    const s = multi.find(x => x.kind==="成交指数") || multi[0] || all[0];
+    const pts = s?.points || [];
+    const prev = pts.length>1 ? pts.at(-2) : null;
+    const dl = prev ? pts.at(-1).value/prev.value - 1 : null;
+    out.push(kpi(`${key} 美国租金`, usd(r.price), "/卡时", dl, prev ? `${s.kind} ${pct(dl)}，${prev.date.slice(5)} → ${pts.at(-1).date.slice(5)}` : "",
+      `<a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.source)}</a> · ${esc(r.as_of)}`, spark(pts, "var(--us)")));
+  }
+  const us = rentBy("US","H100"), cn = rentBy("CN","H100");
+  if (us && cn && FX){
+    const c = cn.price/FX, sp = c/us.price - 1;
+    out.push(kpi("H100 中国 vs 美国", usd(c), "/卡时", null,
+      `${sp<0?"中国便宜":"中国贵"} ${f2(Math.abs(sp)*100,1)}%（美国 ${usd(us.price)}）`,
+      `<a href="${esc(cn.url)}" target="_blank" rel="noopener">${esc(cn.source)}</a> · ¥${f2(cn.price)} · ${esc(cn.as_of)}`));
+  }
+  const pb = paybackRows(0.7, 0.3).filter(x => isFinite(x.months)).sort((a,b) => a.months-b.months)[0];
+  if (pb) out.push(kpi("最快回本（默认假设）", f2(pb.months,1), "个月", null, `${pb.label}`, "利用率 70%，运营成本 $0.30/卡时，见下方计算器"));
+  $("#kpis").innerHTML = out.join("");
 }
 
-let DATA, filter = "all";
-function renderBuy(){
-  $("#buy").innerHTML = DATA.purchase.filter(p => filter==="all" || p.region===filter).map(p => `
-    <tr><td><span class="chip ${p.region==='Global'?'Other':p.region}">${REGION[p.region]}</span></td>
-    <td>${esc(p.item)}</td><td>${esc(p.channel)}</td>
-    <td class="num">${money(p.price, p.unit)}</td><td class="num">${perCard(p.item, p.price, p.unit)}</td><td class="num">${p.unit==="CNY" && DATA.fx_usdcny ? money(p.price/DATA.fx_usdcny,"USD") : "—"}</td>
-    <td>${esc(p.note)}</td>
-    <td><span class="conf ${p.confidence}">${CONF[p.confidence]}</span> <a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.source)}</a> · ${esc(p.as_of)}</td></tr>`).join("");
-  ["all","CN","US"].forEach(k => $("#f-"+k).setAttribute("aria-pressed", String(k===filter)));
+/* ---------- routes ---------- */
+function renderRoutes(){
+  const ico = {open:"✓ 开放", license:"! 需许可", closed:"✕ 关闭"};
+  const order = {closed:0, license:1, open:2};
+  $("#routes").innerHTML = [...(D.routes||[])].sort((a,b)=>order[a.status]-order[b.status]).map(r => `
+    <div class="rt"><span class="pill ${r.status}">${ico[r.status]}</span>
+      <a href="${esc(r.url)}" target="_blank" rel="noopener"><b>${esc(r.route)}</b></a>
+      <span class="n">${r.since ? esc(r.since)+" 起 · " : ""}${esc(r.note)}</span></div>`).join("") || "<p class='note'>暂无</p>";
 }
 
-function render(d){
-  DATA = d;
-  const t = new Date(d.updated_at);
-  $("#meta").textContent = "更新于 " + t.toLocaleString("zh-CN",{timeZone:"Asia/Shanghai",hour12:false}) + " 北京时间" +
-    (d.fx_usdcny ? ` · USD/CNY 中间价 ${d.fx_usdcny}（${d.fx_as_of || ""}）` : "");
-  if (d.fx_url) $("#foot").insertAdjacentHTML("beforeend", ` 汇率：<a href="${esc(d.fx_url)}" target="_blank" rel="noopener">${esc(d.fx_source)}</a> · ${esc(d.fx_as_of)}。`);
-  $("#heads").innerHTML = d.headline.map(h => `<li>${esc(h)}</li>`).join("");
-  const us = d.rental.filter(r => r.region==="US"), cn = d.rental.filter(r => r.region==="CN");
-  const fx = d.fx_usdcny;
-  const cnShow = fx ? cn.map(r => toUSD(r, fx)) : cn;
-  const top = rows => Math.max(0, ...rows.map(r => Math.max(r.high, r.price)));
-  const usMax = top(us) * 1.05;
-  $("#rent-us").innerHTML = ladder(us, "us", "$", usMax);
-  $("#rent-cn").innerHTML = fx ? ladder(cnShow, "cn", "$", usMax) : ladder(cn, "cn", "¥", top(cn) * 1.05);
-  if (!fx) $("#cn-tag").textContent = "CNY / 卡·小时（未取到汇率）";
-  $("#cn-flag").hidden = !cn.every(r => /国际|Vast/.test(r.source + r.note));
-  renderBuy();
-  $("#reg").innerHTML = [...d.regulation].sort((a,b) => b.date.localeCompare(a.date)).map(r => `
-    <div class="ev"><div class="d">${esc(r.date)}</div><div>
-      <h3><span class="chip ${r.jurisdiction}">${REGION[r.jurisdiction]}</span><span class="chip ${r.direction}">${DIR[r.direction]}</span>${esc(r.title)}</h3>
-      <p>${esc(r.summary)}</p><p class="imp">影响：${esc(r.impact)}</p>
-      <p class="meta"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.source)}</a></p></div></div>`).join("");
-  $("#opps").innerHTML = d.opportunities.map(o => `<div class="opp"><h3>${esc(o.title)}</h3><p>${esc(o.detail)}</p><p class="b">依据：${esc(o.basis)}</p></div>`).join("");
+/* ---------- trend chart ---------- */
+let trendKey = "H100";
+function renderTrend(){
+  const keys = [...new Set((BF?.series||[]).map(s=>s.gpu))];
+  $("#trend-tabs").innerHTML = keys.map(k => `<button type="button" aria-pressed="${k===trendKey}" data-k="${k}">${k}</button>`).join("");
+  const cut = new Date(); cut.setMonth(cut.getMonth()-7);
+  const ss = seriesFor(trendKey).map(s => ({...s, points:s.points.filter(p => new Date(p.date) >= cut)})).filter(s => s.points.length);
+  const W=560, H=250, L=44, R=16, T=12, B=28;
+  const all = ss.flatMap(s => s.points);
+  const xs = all.map(p => +new Date(p.date)), ys = all.map(p => p.value);
+  const x0 = Math.min(...xs), x1 = Math.max(...xs);
+  const yMax = Math.max(...ys) * 1.12, step = niceStep(yMax/4);
+  const top = Math.ceil(yMax/step)*step;
+  const X = t => L + (t-x0)/(x1-x0||1)*(W-L-R), Y = v => T + (1 - v/top)*(H-T-B);
+  let g = "";
+  for (let v=0; v<=top+1e-9; v+=step) g += `<line class="gl" x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${L-6}" y="${Y(v)+4}" text-anchor="end">$${f2(v, step<1?1:0)}</text>`;
+  // month ticks
+  const d0 = new Date(x0); d0.setDate(1); d0.setMonth(d0.getMonth()+1);
+  const months = []; for (let d=new Date(d0); +d<=x1; d.setMonth(d.getMonth()+1)) months.push(new Date(d));
+  const every = Math.ceil(months.length/7);
+  months.forEach((d,i) => { if (i%every) return; const x=X(+d); g += `<line class="ax" x1="${x}" x2="${x}" y1="${H-B}" y2="${H-B+4}"/><text x="${x}" y="${H-8}" text-anchor="middle">${d.getFullYear()%100}/${d.getMonth()+1}</text>`; });
+  g += `<line class="ax" x1="${L}" x2="${W-R}" y1="${H-B}" y2="${H-B}"/>`;
+  let marks = "";
+  for (const s of ss){
+    const c = KIND_COLOR[s.kind] || "var(--ink2)";
+    if (s.points.length>1) marks += `<path d="${s.points.map((p,i)=>(i?"L":"M")+X(+new Date(p.date)).toFixed(1)+" "+Y(p.value).toFixed(1)).join(" ")}" fill="none" stroke="${c}" stroke-width="2" stroke-linejoin="round"${s.points.some(p=>p.derived)?' stroke-dasharray="0"':""}/>`;
+    for (const p of s.points){
+      const x = X(+new Date(p.date)), y = Y(p.value);
+      const t = `<b>${usd(p.value)}</b> · ${esc(p.date)}<br>${esc(s.kind)} · ${esc(p.source)}`;
+      marks += `<circle cx="${x}" cy="${y}" r="4.5" fill="${p.derived?"var(--panel)":c}" stroke="${p.derived?c:"var(--panel)"}" stroke-width="2"/><circle cx="${x}" cy="${y}" r="12" fill="transparent" data-tip="${esc(t)}"/>`;
+    }
+    const lp = s.points.at(-1);
+    marks += `<text class="val" x="${X(+new Date(lp.date))+8}" y="${Y(lp.value)+4}">${f2(lp.value)}</text>`;
+  }
+  $("#trend").innerHTML = `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" style="min-width:460px" role="img" aria-label="${trendKey} 美国租金走势">${g}${marks}</svg></div>`;
+  $("#trend-legend").innerHTML = ss.map(s => `<span><i style="background:${KIND_COLOR[s.kind]||"var(--ink2)"}"></i>${esc(s.kind)} · ${esc(s.source)}</span>`).join("") + `<span><i class="hollow"></i>反推点</span>`;
+  const n = all.length;
+  $("#trend-note").textContent = `共 ${n} 个数据点。成交指数和挂牌价走势不一致时，说明实际成交比报价软或硬。看板每天存档一次，曲线会越来越密。`;
+}
+function niceStep(raw){ const p = Math.pow(10, Math.floor(Math.log10(raw))); for (const m of [1,2,2.5,5,10]) if (m*p >= raw) return m*p; return 10*p; }
+
+/* ---------- spread ladder ---------- */
+function renderSpread(){
+  const rows = D.rental.filter(r => r.region==="US").map(r => {
+    const key = r.gpu_key || keyOf(r.gpu);
+    const cn = rentBy("CN", key);
+    return {key, us:r, cn: cn ? rentUSD(cn) : null, cnRaw: cn};
+  });
+  // 加上只有中国价的型号
+  for (const r of D.rental.filter(r => r.region==="CN")){
+    const key = r.gpu_key || keyOf(r.gpu);
+    if (!rows.some(x => x.key===key)) rows.push({key, us:null, cn:rentUSD(r), cnRaw:r});
+  }
+  const max = Math.max(...rows.flatMap(x => [x.us?.high, x.us?.price, x.cn?.price].filter(Boolean)));
+  const W=560, L=74, R=60, rowH=30, T=20, H=T+rows.length*rowH+6;
+  const top = Math.ceil(max/5)*5;
+  const X = v => L + Math.sqrt(v/top)*(W-L-R);
+  let g = "";
+  for (const v of [0,0.5,1,2,5,10,top].filter((v,i,a)=>v<=top && a.indexOf(v)===i)){
+    g += `<line class="gl" x1="${X(v)}" x2="${X(v)}" y1="${T-4}" y2="${H-4}"/><text x="${X(v)}" y="${T-8}" text-anchor="middle">$${v}</text>`;
+  }
+  rows.forEach((r,i) => {
+    const y = T + i*rowH + rowH/2;
+    g += `<text class="lbl" x="${L-10}" y="${y+4}" text-anchor="end">${esc(r.key)}</text>`;
+    if (r.us){
+      const u = r.us;
+      const tipU = `<b>${esc(r.key)} 美国</b><br>地板 <b>${usd(u.low)}</b> → 代表价 <b>${usd(u.price)}</b> → 最高 <b>${usd(u.high)}</b><br>地板到代表价 ${pct(u.price/u.low-1)}<br>${esc(u.source)} · ${esc(u.as_of)}`;
+      g += `<rect x="${X(u.low)}" y="${y-4}" width="${Math.max(2,X(u.high)-X(u.low))}" height="8" rx="4" fill="var(--us)" opacity=".28"/>`;
+      g += `<circle cx="${X(u.price)}" cy="${y}" r="5.5" fill="var(--us)" stroke="var(--panel)" stroke-width="2"/>`;
+      g += `<rect x="${X(u.low)-6}" y="${y-12}" width="${X(u.high)-X(u.low)+12}" height="24" fill="transparent" data-tip="${esc(tipU)}"/>`;
+    }
+    if (r.cn){
+      const tipC = `<b>${esc(r.key)} 中国</b><br><b>${usd(r.cn.price)}</b>（¥${f2(r.cnRaw.price)}）${r.us ? `<br>较美国代表价 ${pct(r.cn.price/r.us.price-1)}` : ""}<br>${esc(r.cnRaw.source)} · ${esc(r.cnRaw.as_of)}`;
+      const x = X(r.cn.price);
+      g += `<path d="M${x} ${y-6} L${x+6} ${y} L${x} ${y+6} L${x-6} ${y} Z" fill="var(--cn)" stroke="var(--panel)" stroke-width="1.5"/><circle cx="${x}" cy="${y}" r="11" fill="transparent" data-tip="${esc(tipC)}"/>`;
+    }
+    const main = r.us ? r.us.price : r.cn.price;
+    g += `<text class="val" x="${W-R+8}" y="${y+4}">${f2(main)}</text>`;
+  });
+  $("#spread").innerHTML = `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" style="min-width:460px" role="img" aria-label="各型号租金区间与中美对比">${g}</svg></div><p class="note">横轴为平方根刻度，便于同时看清 $0.5 和 $20 的型号。右侧数字为美国代表价（无美国价时为中国价）。</p>`;
 }
 
-["all","CN","US"].forEach(k => $("#f-"+k).addEventListener("click", () => { filter = k; renderBuy(); }));
-fetch("data/latest.json", {cache:"no-store"}).then(r => r.json()).then(render)
-  .catch(e => { $("#meta").textContent = "数据加载失败：" + e.message + "（请确认 data/latest.json 与页面在同一目录）"; });
+/* ---------- payback ---------- */
+function paybackRows(util, opexUSD){
+  const out = [];
+  for (const p of D.purchase){
+    const key = p.gpu && p.gpu!=="other" ? p.gpu : keyOf(p.item);
+    if (!key || !p.cards) continue;
+    const region = p.region==="Global" ? "US" : p.region;
+    const r = rentBy(region, key); if (!r) continue;
+    const cny = p.unit==="CNY";
+    if (cny && !r.unit.startsWith("CNY")) continue;
+    const card = p.price / p.cards;
+    const opex = cny ? opexUSD * (FX||7) : opexUSD;
+    const net = r.price - opex;
+    const months = net > 0 ? card / (net * 730 * util) : Infinity;
+    out.push({label:`${REGION[region]} ${p.item}（${p.channel}）`, region, key, card, cny, rent:r.price, months, p, r});
+  }
+  return out;
+}
+function renderPay(){
+  const util = $("#util").value/100, opex = +$("#opex").value;
+  $("#util-o").textContent = Math.round(util*100)+"%"; $("#opex-o").textContent = usd(opex);
+  const rows = paybackRows(util, opex).sort((a,b) => a.months-b.months);
+  const W=1100, L=330, R=70, rowH=30, T=8, H=T+rows.length*rowH+20;
+  const fin = rows.filter(r=>isFinite(r.months)).map(r=>r.months);
+  const top = Math.max(48, Math.ceil(Math.max(...fin, 36)/12)*12);
+  const X = v => L + Math.min(v,top)/top*(W-L-R);
+  let g = "";
+  for (let m=0; m<=top; m+=12) g += `<line class="gl" x1="${X(m)}" x2="${X(m)}" y1="${T}" y2="${H-20}"/><text x="${X(m)}" y="${H-6}" text-anchor="middle">${m}月</text>`;
+  rows.forEach((r,i) => {
+    const y = T + i*rowH;
+    const c = r.region==="CN" ? "var(--cn)" : "var(--us)";
+    const cur = r.cny ? "¥" : "$";
+    const t = `<b>${esc(r.label)}</b><br>每卡 ${cur}${f2(r.card,0)} · 租金 ${cur}${f2(r.rent)}/卡时<br>回本 <b>${isFinite(r.months)?f2(r.months,1)+" 个月":"租金低于成本，回不了本"}</b><br>${esc(r.p.source)} · ${esc(r.p.as_of)}`;
+    g += `<text class="lbl" x="${L-10}" y="${y+rowH/2+4}" text-anchor="end">${esc(r.region==="CN"?"中国":"美国")} ${esc(r.p.item.replace(/（.*?）/g,""))} · ${esc(r.p.channel.replace(/（.*?）/g,"").slice(0,8))}</text>`;
+    if (isFinite(r.months)){
+      g += `<rect x="${L}" y="${y+6}" width="${Math.max(3,X(r.months)-L)}" height="${rowH-12}" rx="4" fill="${c}"/>`;
+      g += `<text class="val" x="${X(r.months)+6}" y="${y+rowH/2+4}">${r.months>top?"＞":""}${f2(Math.min(r.months,999),1)}</text>`;
+    } else g += `<text x="${L+6}" y="${y+rowH/2+4}">租金 ≤ 成本</text>`;
+    g += `<rect x="0" y="${y}" width="${W}" height="${rowH}" fill="transparent" data-tip="${esc(t)}"/>`;
+  });
+  g += `<line x1="${X(36)}" x2="${X(36)}" y1="${T}" y2="${H-20}" stroke="var(--ink2)" stroke-dasharray="4 3"/>`;
+  $("#pay").innerHTML = rows.length ? `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" style="min-width:640px" role="img" aria-label="回本月数">${g}</svg></div>` : "<p class='note'>暂无可配对的采购价与租金。</p>";
+}
+
+/* ---------- details ---------- */
+function renderDetails(){
+  $("#heads").innerHTML = D.headline.map(h => `<li>${esc(h)}</li>`).join("");
+  $("#reg-n").textContent = D.regulation.length;
+  $("#reg").innerHTML = [...D.regulation].sort((a,b) => b.date.localeCompare(a.date)).map(r => `
+    <div class="ev"><div class="meta">${esc(r.date)}</div><div><b><span class="tag ${r.jurisdiction}">${REGION[r.jurisdiction]}</span>${esc(r.title)}</b>
+      <p>${esc(r.summary)}</p><p>影响：${esc(r.impact)} · <a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.source)}</a></p></div></div>`).join("");
+  $("#buy").innerHTML = D.purchase.map(p => {
+    const per = p.cards ? p.price/p.cards/(p.unit==="CNY"&&FX?FX:1) : null;
+    return `<tr><td><span class="tag ${p.region==="Global"?"Other":p.region}">${REGION[p.region]}</span></td><td>${esc(p.item)}</td><td>${esc(p.channel)}</td>
+    <td class="n">${p.unit==="CNY" ? "¥"+f2(p.price/1e4,0)+" 万" : usd(p.price,0)}</td><td class="n">${per? usd(per,0) : "—"}</td>
+    <td><a href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.source)}</a> · ${esc(p.as_of)}</td></tr>`; }).join("");
+  $("#rent").innerHTML = D.rental.map(r => { const s = r.unit.startsWith("CNY") ? "¥" : "$"; return `<tr><td><span class="tag ${r.region}">${REGION[r.region]}</span></td><td>${esc(r.gpu)}</td>
+    <td class="n">${s}${f2(r.price)}</td><td class="n">${s}${f2(r.low)}</td><td class="n">${s}${f2(r.high)}</td><td>${esc(r.note)}</td>
+    <td><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.source)}</a> · ${esc(r.as_of)}</td></tr>`; }).join("");
+  $("#opps").innerHTML = D.opportunities.map(o => `<div><h3>${esc(o.title)}</h3><p>${esc(o.detail)}</p><p class="note">依据：${esc(o.basis)}</p></div>`).join("");
+}
+
+async function main(){
+  const get = u => fetch(u, {cache:"no-store"}).then(r => r.ok ? r.json() : null).catch(() => null);
+  [D, BF] = await Promise.all([get("data/latest.json"), get("data/backfill.json")]);
+  if (!D){ $("#meta").textContent = "数据加载失败：找不到 data/latest.json"; return; }
+  FX = D.fx_usdcny || null;
+  const days = await get("data/history/index.json") || [];
+  HIST = (await Promise.all(days.slice(-120).map(d => get(`data/history/${d}.json`)))).filter(Boolean);
+  const t = new Date(D.updated_at);
+  $("#meta").textContent = "更新于 " + t.toLocaleString("zh-CN",{timeZone:"Asia/Shanghai",hour12:false}) + " 北京时间" + (FX ? ` · USD/CNY ${FX}` : "");
+  renderKPIs(); renderRoutes(); renderTrend(); renderSpread(); renderPay(); renderDetails();
+  $("#trend-tabs").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (b){ trendKey = b.dataset.k; renderTrend(); } });
+  $("#util").addEventListener("input", renderPay); $("#opex").addEventListener("input", renderPay);
+}
+main();
 </script>

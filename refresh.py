@@ -37,31 +37,38 @@ ITEM_PROPS = {
 }
 REQ = ["source", "url", "as_of", "confidence", "note"]
 
+GPU_KEYS = ["GB300", "GB200", "B300", "B200", "H200", "H100", "H800", "H20", "A100", "A800",
+            "MI300X", "MI355X", "910C", "910B", "RTX 4090", "RTX 5090", "RTX PRO 6000", "other"]
+
 SCHEMA = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["updated_at", "fx_usdcny", "fx_as_of", "fx_source", "fx_url", "headline", "rental", "purchase", "regulation", "opportunities"],
+    "required": ["updated_at", "fx_usdcny", "fx_as_of", "fx_source", "fx_url", "headline", "rental", "purchase", "regulation", "opportunities", "routes"],
     "properties": {
         "updated_at": {"type": "string"},
         "fx_usdcny": {"type": "number", "description": "人民币兑美元中间价"},
         "fx_as_of": {"type": "string"}, "fx_source": {"type": "string"}, "fx_url": {"type": "string"},
-        "headline": {"type": "array", "items": {"type": "string"}, "description": "今日 3-5 条要点，中文"},
+        "headline": {"type": "array", "items": {"type": "string"}, "description": "今日 3-5 条要点，中文，每条不超过 40 字"},
         "rental": {"type": "array", "items": {
             "type": "object", "additionalProperties": False,
-            "required": ["region", "gpu", "price", "low", "high", "unit"] + REQ,
+            "required": ["region", "gpu", "gpu_key", "price", "low", "high", "unit"] + REQ,
             "properties": {
                 "region": {"type": "string", "enum": ["US", "CN"]},
                 "gpu": {"type": "string"},
-                "price": {"type": "number", "description": "代表价/中位或指数"},
-                "low": {"type": "number"}, "high": {"type": "number"},
+                "gpu_key": {"type": "string", "enum": GPU_KEYS},
+                "price": {"type": "number", "description": "代表价：优先成交指数，其次挂牌中位"},
+                "low": {"type": "number", "description": "市场地板价：最便宜的 neocloud/spot/marketplace"},
+                "high": {"type": "number", "description": "超大云（AWS/Azure/GCP）按需价；无则取最高挂牌"},
                 "unit": {"type": "string", "enum": ["USD/GPU·h", "CNY/卡·h"]},
                 **ITEM_PROPS}}},
         "purchase": {"type": "array", "items": {
             "type": "object", "additionalProperties": False,
-            "required": ["region", "item", "price", "unit", "channel"] + REQ,
+            "required": ["region", "item", "gpu", "cards", "price", "unit", "channel"] + REQ,
             "properties": {
                 "region": {"type": "string", "enum": ["US", "CN", "Global"]},
                 "item": {"type": "string", "description": "如 H200 8卡整机 / B200 单卡"},
+                "gpu": {"type": "string", "enum": GPU_KEYS + ["other"]},
+                "cards": {"type": "integer", "description": "这个价格包含几张卡；未知填 0"},
                 "price": {"type": "number"},
                 "unit": {"type": "string", "enum": ["USD", "CNY"]},
                 "channel": {"type": "string", "description": "官方/OEM 报价、渠道价、灰色市场等"},
@@ -76,6 +83,13 @@ SCHEMA = {
                 "impact": {"type": "string", "description": "对价格/供给的影响"},
                 "direction": {"type": "string", "enum": ["tighten", "loosen", "neutral"]},
                 "source": {"type": "string"}, "url": {"type": "string"}}}},
+        "routes": {"type": "array", "description": "算力倒卖通道状态，每条一句话", "items": {
+            "type": "object", "additionalProperties": False,
+            "required": ["route", "status", "since", "note", "url"],
+            "properties": {"route": {"type": "string"},
+                           "status": {"type": "string", "enum": ["open", "license", "closed"]},
+                           "since": {"type": "string"}, "note": {"type": "string", "description": "不超过 30 字"},
+                           "url": {"type": "string"}}}},
         "opportunities": {"type": "array", "items": {
             "type": "object", "additionalProperties": False,
             "required": ["title", "detail", "basis"],
@@ -93,7 +107,9 @@ RESEARCH_PROMPT = """今天是 {today}。你是 AI 算力市场分析师。请�
 3. 购买价：H200/B200/B300 单卡与 8 卡整机（美国渠道价、中国渠道价与灰色市场价）、H20、昇腾 910C。
 4. 监管：近 30 天美国出口管制（BIS 规则、许可、远程访问）、中国进口/国产替代/数据中心与算力政策、
    其他影响供给的规定。
-5. 基于以上数据的 3-5 个产业机会（写明依据）。
+5. 基于以上数据的 3-5 个产业机会（写明依据），读者是算力倒卖者：关注进货价与售价的价差、回本周期、通道风险。
+6. 通道状态：美国境内、海外机房→中资、H200→中国大陆、东南亚进货、第三方转租、国产卡等通道当前是开放/需许可/关闭。
+租赁价每行给出三个数：代表价（成交指数优先）、市场地板价（最便宜 neocloud/spot）、超大云按需价。
 
 每个数字必须附来源名称、URL 和来源标注的日期；找不到就不写，不要估算。
 二手/自媒体来源标 confidence=low。查当日人民币兑美元中间价（中国外汇交易中心），附日期和 URL。
