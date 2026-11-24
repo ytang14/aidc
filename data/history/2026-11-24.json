@@ -1,0 +1,378 @@
+{
+  "updated_at": "2026-11-24T01:30:00+00:00",
+  "fx_usdcny": 6.712,
+  "headline": [
+    "美国 H100 指数价 $2.91/卡时（Ornn，11/22），11 月均值 $3.51，较 10 月 +6.4%；Blackwell 涨得更快：B200 +8.6%、B300 +10.4%。",
+    "11/19 美国 BIS 远程访问新规生效：境外数据中心为中国实体提供超过 1200 万 TPP 算力须申请许可，海外租卡通道基本关闭。",
+    "英伟达 11/17 财报会表示不再向中国发运获许可的 Hopper 产品（H200），中国合规高端卡来源中断。",
+    "中国灰色市场 H200 8 卡整机约 ¥670–690 万，约为一年前 3 倍；同期 B300 8 卡市场价 ¥1700–2000 万，远高于出厂折算价。",
+    "Crusoe 宣布 12/1 起 H100 $3.90→$4.50、H200 $4.29→$5.40，neocloud 价格仍在上行。"
+  ],
+  "rental": [
+    {
+      "region": "US",
+      "gpu": "H100 SXM",
+      "price": 2.91,
+      "low": 2.49,
+      "high": 3.9,
+      "unit": "USD/GPU·h",
+      "source": "Ornn OCPI 指数",
+      "url": "https://data.ornn.com/",
+      "as_of": "2026-11-22",
+      "confidence": "high",
+      "note": "区间为各指数口径（Ornn/gpurentalprices/Compute Census）最低到最高；11 月均值 $3.51（gpurentalprices）；超大云按需 $6.88（AWS）–$12.29（Azure）"
+    },
+    {
+      "region": "US",
+      "gpu": "H200",
+      "price": 5.79,
+      "low": 4.63,
+      "high": 5.79,
+      "unit": "USD/GPU·h",
+      "source": "Ornn OCPI 指数",
+      "url": "https://data.ornn.com/",
+      "as_of": "2026-11-22",
+      "confidence": "high",
+      "note": "区间为各指数口径（Ornn/gpurentalprices/Compute Census）最低到最高；Computecensus 中位 $4.80"
+    },
+    {
+      "region": "US",
+      "gpu": "B200",
+      "price": 9.08,
+      "low": 7.4,
+      "high": 9.08,
+      "unit": "USD/GPU·h",
+      "source": "Ornn OCPI 指数",
+      "url": "https://data.ornn.com/",
+      "as_of": "2026-11-22",
+      "confidence": "high",
+      "note": "区间为各指数口径（Ornn/gpurentalprices/Compute Census）最低到最高；AWS 按需 $14.24，Lambda $7.69"
+    },
+    {
+      "region": "US",
+      "gpu": "B300",
+      "price": 11.46,
+      "low": 9.25,
+      "high": 11.46,
+      "unit": "USD/GPU·h",
+      "source": "Ornn OCPI 指数",
+      "url": "https://data.ornn.com/",
+      "as_of": "2026-11-22",
+      "confidence": "high",
+      "note": "区间为各指数口径（Ornn/gpurentalprices/Compute Census）最低到最高；AWS 按需 $17.80"
+    },
+    {
+      "region": "US",
+      "gpu": "GB200",
+      "price": 13.25,
+      "low": 8.0,
+      "high": 27.04,
+      "unit": "USD/GPU·h",
+      "source": "Compute Census 中位",
+      "url": "https://computecensus.com/gpu-prices/",
+      "as_of": "2026-11-16",
+      "confidence": "medium",
+      "note": "下限 GMI Cloud，上限 Azure 按需；neocloud 中位 $8.00（amcompute，10/25）"
+    },
+    {
+      "region": "US",
+      "gpu": "A100",
+      "price": 1.75,
+      "low": 0.53,
+      "high": 5.07,
+      "unit": "USD/GPU·h",
+      "source": "Compute Census 中位",
+      "url": "https://computecensus.com/gpu-prices/",
+      "as_of": "2026-11-16",
+      "confidence": "medium",
+      "note": "Ornn 指数 $0.99，gpurentalprices $1.93"
+    },
+    {
+      "region": "US",
+      "gpu": "MI300X",
+      "price": 3.19,
+      "low": 2.99,
+      "high": 3.22,
+      "unit": "USD/GPU·h",
+      "source": "gpurentalprices 均值",
+      "url": "https://gpurentalprices.com/gpu-price-index/2026-11",
+      "as_of": "2026-11-23",
+      "confidence": "medium",
+      "note": "Azure/Oracle 按需 $6.00"
+    },
+    {
+      "region": "US",
+      "gpu": "RTX 4090",
+      "price": 0.62,
+      "low": 0.48,
+      "high": 0.89,
+      "unit": "USD/GPU·h",
+      "source": "gpurentalprices 均值",
+      "url": "https://gpurentalprices.com/gpu-price-index/2026-11",
+      "as_of": "2026-11-23",
+      "confidence": "medium",
+      "note": "较 10 月 -10.6%"
+    },
+    {
+      "region": "CN",
+      "gpu": "H100 SXM",
+      "price": 15.2,
+      "low": 9.55,
+      "high": 32.9,
+      "unit": "CNY/卡·h",
+      "source": "tandiu（Vast.ai 人民币中位）",
+      "url": "https://www.tandiu.cn/gpu-rental",
+      "as_of": "2026-11-23",
+      "confidence": "low",
+      "note": "国际市场价折人民币，非国内云厂商报价；7 日 +21.4%"
+    },
+    {
+      "region": "CN",
+      "gpu": "H200",
+      "price": 30.8,
+      "low": 21.8,
+      "high": 35.2,
+      "unit": "CNY/卡·h",
+      "source": "tandiu（Vast.ai 人民币中位）",
+      "url": "https://www.tandiu.cn/gpu-rental",
+      "as_of": "2026-11-23",
+      "confidence": "low",
+      "note": "国际市场价折人民币；7 日 -12.3%"
+    },
+    {
+      "region": "CN",
+      "gpu": "B200",
+      "price": 55.3,
+      "low": 55.3,
+      "high": 55.3,
+      "unit": "CNY/卡·h",
+      "source": "tandiu（Vast.ai 人民币中位）",
+      "url": "https://www.tandiu.cn/gpu-rental",
+      "as_of": "2026-11-23",
+      "confidence": "low",
+      "note": "国际市场价折人民币；7 日 -17.2%，30 日 +20.4%"
+    },
+    {
+      "region": "CN",
+      "gpu": "RTX 4090",
+      "price": 2.69,
+      "low": 2.69,
+      "high": 2.69,
+      "unit": "CNY/卡·h",
+      "source": "tandiu（Vast.ai 人民币中位）",
+      "url": "https://www.tandiu.cn/gpu-rental",
+      "as_of": "2026-11-23",
+      "confidence": "low",
+      "note": "国际市场价折人民币"
+    }
+  ],
+  "purchase": [
+    {
+      "region": "CN",
+      "item": "H200 8卡整机",
+      "price": 6800000,
+      "unit": "CNY",
+      "channel": "灰色市场",
+      "source": "tandiu / Wccftech",
+      "url": "https://wccftech.com/china-gray-market-prices-nvidia-8-gpu-h200-server-900000-600k-stranded-warehouses/",
+      "as_of": "2026-11-16",
+      "confidence": "medium",
+      "note": "¥670–690 万，约 $90 万；约 60 万颗 H200 滞留香港"
+    },
+    {
+      "region": "CN",
+      "item": "H200 8卡整机",
+      "price": 1900000,
+      "unit": "CNY",
+      "channel": "出厂折算",
+      "source": "tandiu",
+      "url": "https://www.tandiu.cn/compute",
+      "as_of": "2026-11-13",
+      "confidence": "low",
+      "note": "¥166–214 万，按单卡 ¥20.7–26.7 万折算"
+    },
+    {
+      "region": "CN",
+      "item": "H100 SXM 8卡整机",
+      "price": 3350000,
+      "unit": "CNY",
+      "channel": "国内市场",
+      "source": "tandiu",
+      "url": "https://www.tandiu.cn/compute",
+      "as_of": "2026-10-16",
+      "confidence": "low",
+      "note": "约 ¥41.9 万/卡"
+    },
+    {
+      "region": "CN",
+      "item": "B300 8卡整机",
+      "price": 18500000,
+      "unit": "CNY",
+      "channel": "国内市场",
+      "source": "tandiu",
+      "url": "https://www.tandiu.cn/compute",
+      "as_of": "2026-11-03",
+      "confidence": "low",
+      "note": "¥1700–2000 万；出厂折算 ¥307–368 万（11/23）"
+    },
+    {
+      "region": "CN",
+      "item": "B200 8卡整机",
+      "price": 3250000,
+      "unit": "CNY",
+      "channel": "国内市场",
+      "source": "tandiu",
+      "url": "https://www.tandiu.cn/compute",
+      "as_of": "2026-06",
+      "confidence": "low",
+      "note": "¥300–350 万，数据较旧"
+    },
+    {
+      "region": "CN",
+      "item": "H20 96GB 单卡",
+      "price": 175000,
+      "unit": "CNY",
+      "channel": "国内市场",
+      "source": "tandiu",
+      "url": "https://www.tandiu.cn/compute",
+      "as_of": "2026-09-03",
+      "confidence": "low",
+      "note": "8 卡模组约 ¥140 万"
+    },
+    {
+      "region": "CN",
+      "item": "昇腾 910C 128GB 单卡",
+      "price": 140000,
+      "unit": "CNY",
+      "channel": "国内市场",
+      "source": "tandiu",
+      "url": "https://www.tandiu.cn/compute",
+      "as_of": "2026-08-27",
+      "confidence": "low",
+      "note": "区间 ¥8–20 万，波动大"
+    },
+    {
+      "region": "CN",
+      "item": "RTX 5090D 单卡",
+      "price": 26000,
+      "unit": "CNY",
+      "channel": "国内市场",
+      "source": "tandiu",
+      "url": "https://www.tandiu.cn/compute",
+      "as_of": "2026-11-20",
+      "confidence": "medium",
+      "note": "11 月初约 ¥3.8 万，回落明显"
+    },
+    {
+      "region": "US",
+      "item": "H100 8卡整机",
+      "price": 302500,
+      "unit": "USD",
+      "channel": "美国渠道（Thinkmate/SabrePC）",
+      "source": "tandiu 转引",
+      "url": "https://www.tandiu.cn/compute",
+      "as_of": "2026-11-13",
+      "confidence": "medium",
+      "note": "$29.6–30.9 万"
+    },
+    {
+      "region": "US",
+      "item": "H200 NVL PCIe 单卡",
+      "price": 33732,
+      "unit": "USD",
+      "channel": "美国渠道（PNY/CDW）",
+      "source": "aliteq",
+      "url": "https://aliteq.com/h200-price",
+      "as_of": "2026-11-17",
+      "confidence": "medium",
+      "note": "HPE 品牌 $94,699"
+    }
+  ],
+  "regulation": [
+    {
+      "date": "2026-11-19",
+      "jurisdiction": "US",
+      "title": "BIS 远程访问新规生效（Addressing Remote Access to Advanced Semiconductors）",
+      "summary": "向全球任何数据中心出口/转移先进 AI 芯片及服务器，如明知算力服务中国等 D:5 国家实体且总量超过 1200 万 TPP（含关联数据中心），须申请许可；覆盖经中间商的间接访问；已有业务有 90 天宽限（约到 2027-02-17）；美国境内数据中心不受此条约束。",
+      "impact": "中国企业海外租卡训练大模型的路径基本关闭，需求回流国产算力；海外面向中国客户的产能融资收紧。",
+      "direction": "tighten",
+      "source": "Sidley / WilmerHale / TechCrunch",
+      "url": "https://www.sidley.com/en/insights/newsupdates/2026/11/new-export-controls-on-advanced-chips-close-remote-compute-access-loopholes-five-key-takeaways"
+    },
+    {
+      "date": "2026-11-19",
+      "jurisdiction": "US",
+      "title": "印尼、马来西亚、新加坡、泰国、巴西出口新增许可要求，正式废止 AI Diffusion Rule",
+      "summary": "向上述五国出口特定先进芯片与服务器均需许可（不论用途），美国总部企业按月报告可豁免；同时废止 2025 年 1 月 AI 扩散规则的大部分内容（模型权重管控、国家配额等）。",
+      "impact": "东南亚和巴西 GPU 供给趋紧、交付周期拉长；美资云厂商相对受益。",
+      "direction": "tighten",
+      "source": "Sidley / WilmerHale",
+      "url": "https://www.wilmerhale.com/en/insights/client-alerts/20261117-us-government-restricts-remote-access-to-advanced-ai-chips-and-formally-rescinds-the-ai-diffusion-rule"
+    },
+    {
+      "date": "2026-11-17",
+      "jurisdiction": "US",
+      "title": "英伟达停止向中国发运获许可的 H200",
+      "summary": "英伟达在财报电话会表示不再向中国发运获许可的 Hopper 数据中心产品；此前对华 H200 销售附带 25% 分成安排（二手来源，未见一手核实）。",
+      "impact": "中国合规高端英伟达货源中断，灰色市场溢价可能继续扩大。",
+      "direction": "tighten",
+      "source": "腾讯新闻 / 虎嗅（二手）",
+      "url": "https://news.qq.com/rain/a/20261118A05V4Q00"
+    },
+    {
+      "date": "2026-11-18",
+      "jurisdiction": "CN",
+      "title": "商务部回应：强烈不满，将采取反制措施",
+      "summary": "商务部表示强烈不满并将采取反制；外交部称其为经济胁迫和长臂管辖。具体反制措施尚未公布。",
+      "impact": "反制方向不明，需关注是否涉及稀土、关键材料或对美芯片企业的调查。",
+      "direction": "neutral",
+      "source": "虎嗅 / 腾讯新闻（二手）",
+      "url": "https://www.huxiu.com/article/4907264.html"
+    },
+    {
+      "date": "2026-11-07",
+      "jurisdiction": "CN",
+      "title": "北京未放行 H200 大规模进口，约 60 万颗滞留香港",
+      "summary": "美方允许对获准中国客户出口 H200 后，北京未批准大规模进口，仅字节、腾讯等少量获批；政策优先扶持国产芯片。",
+      "impact": "H200 国内灰色市场价约为一年前 3 倍；国产卡需求获支撑。",
+      "direction": "tighten",
+      "source": "Wccftech / tandiu",
+      "url": "https://wccftech.com/china-gray-market-prices-nvidia-8-gpu-h200-server-900000-600k-stranded-warehouses/"
+    },
+    {
+      "date": "2026-01",
+      "jurisdiction": "CN",
+      "title": "持续推进国产替代（背景）",
+      "summary": "据报道：国资数据中心项目须使用国产芯片；甘肃、贵州、内蒙古等对使用国产芯片的数据中心给予最高 50% 电费补贴；海关曾告知 H200 不予通关。",
+      "impact": "西部枢纽国产集群扩张，昇腾等国产卡租赁与采购需求上升。",
+      "direction": "tighten",
+      "source": "虎嗅（二手）",
+      "url": "https://www.huxiu.com/article/4907264.html"
+    }
+  ],
+  "opportunities": [
+    {
+      "title": "美国境内与美资算力的溢价",
+      "detail": "新规不约束美国境内数据中心，五国新增许可对美资企业有豁免，合规产能稀缺性上升，Blackwell 租价环比涨 8–10%。",
+      "basis": "BIS 11/19 新规；gpurentalprices 11 月环比"
+    },
+    {
+      "title": "国产算力租赁与西部枢纽",
+      "detail": "海外租卡关闭 + H200 进不来，训练需求回流国内；使用国产芯片的数据中心可拿电费补贴。",
+      "basis": "BIS 远程访问规则；国产替代政策"
+    },
+    {
+      "title": "H100/H200 二手与存量资产",
+      "detail": "中国 H100 8 卡市场价 ¥335 万，约为出厂折算价的 1.6 倍；存量 Hopper 资产在国内仍有显著溢价。",
+      "basis": "tandiu 采购价"
+    },
+    {
+      "title": "合规与 KYC 服务",
+      "detail": "境外数据中心需识别最终客户与关联数据中心算力总量，90 天宽限期内会催生许可申请、客户筛查与算力审计需求。",
+      "basis": "BIS 规则 90 天宽限期"
+    }
+  ],
+  "fx_as_of": "2026-11-23",
+  "fx_source": "人民币兑美元中间价（中国外汇交易中心，经搜狐/新浪转载）",
+  "fx_url": "https://www.sohu.com/a/1105247114_122014422"
+}
