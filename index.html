@@ -74,6 +74,9 @@ svg .ax{stroke:var(--line);stroke-width:1}
 .calc label{display:flex;align-items:center;gap:8px}
 .calc input[type=range]{width:130px;accent-color:var(--us)}
 .calc output{font-family:var(--f-num);color:var(--ink);min-width:52px}
+.terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
+.term h3{font-size:13px;margin:0 0 2px;font-family:var(--f-num)}
+.calc select{font:inherit;font-size:12px;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:2px 6px}
 .formula{font-family:var(--f-num);font-size:12px;color:var(--ink2);background:var(--bg);border-radius:6px;padding:6px 10px;margin:0 0 10px;overflow-x:auto;white-space:nowrap}
 .note{font-size:12px;color:var(--muted);margin:8px 0 0}
 details.panel>summary{cursor:pointer;font-weight:600;font-size:14px;list-style:none;display:flex;justify-content:space-between;gap:12px}
@@ -134,16 +137,28 @@ td a{color:var(--ink2)}
     </section>
   </div>
 
+  <section class="panel" aria-labelledby="h-term">
+    <div class="ph"><div><h2 id="h-term">长协期限曲线</h2><p>USD / GPU·小时，中国价按中间价折算。每个型号单独刻度</p></div></div>
+    <div class="terms" id="terms"></div>
+    <div class="legend">
+      <span><i style="background:var(--us)"></i>美国市场</span><span><i style="background:var(--cn)"></i>中国国内</span>
+      <span><i class="dot" style="background:var(--ink2)"></i>公开报价 / 合同折算</span><span><i class="hollow"></i>估算（悬停看推导）</span>
+      <span><i style="background:var(--muted);width:9px;height:9px;border-radius:0;transform:rotate(45deg)"></i>超大云承诺价（参照）</span>
+    </div>
+    <p class="note" id="term-note"></p>
+  </section>
+
   <section class="panel" aria-labelledby="h-pay">
     <div class="ph"><div><h2 id="h-pay">买卡出租，多久回本</h2><p>拖动假设，柱子实时更新。虚线为 36 个月（常见折旧年限）</p></div></div>
     <div class="calc">
       <label for="util">利用率 <input type="range" id="util" min="30" max="100" step="5" value="70"><output id="util-o">70%</output></label>
       <label for="opex">运营成本 <input type="range" id="opex" min="0" max="1" step="0.05" value="0.3"><output id="opex-o">$0.30</output></label>
-      <span>电力、机房、运维，按每卡每小时美元计，中国按汇率折算</span>
+      <label for="mode">租金口径 <select id="mode"><option value="spot">现货</option><option value="1y">1 年长协</option><option value="3y">3 年长协</option><option value="5y">5 年长协</option></select></label>
+      <span>运营成本含电力、机房、运维，按每卡每小时美元计，中国按汇率折算</span>
     </div>
     <p class="formula">回本月数 = 每卡价格 ÷ [ (租金 − 运营成本) × 730 小时 × 利用率 ]</p>
     <div id="pay"></div>
-    <p class="note">租金用同地区同型号的代表价。未含资金成本、残值和网络设备；整机价按卡数平摊。</p>
+    <p class="note">租金取同地区同型号的所选口径；该口径没有数据时退回现货价，悬停可见。未含资金成本、残值和网络设备；整机价按卡数平摊。</p>
   </section>
 
   <details class="panel" open>
@@ -153,6 +168,10 @@ td a{color:var(--ink2)}
   <details class="panel">
     <summary><span>监管动态（<span id="reg-n"></span> 条）</span></summary>
     <div id="reg"></div>
+  </details>
+  <details class="panel">
+    <summary>长协明细与推导</summary>
+    <div class="tbl"><table><thead><tr><th>地区</th><th>型号</th><th>期限</th><th style="text-align:right">价格</th><th style="text-align:right">区间</th><th>类型</th><th>推导</th><th>来源 · 日期</th></tr></thead><tbody id="ctr"></tbody></table></div>
   </details>
   <details class="panel">
     <summary>采购价明细</summary>
@@ -248,8 +267,8 @@ function renderKPIs(){
       `${sp<0?"中国便宜":"中国贵"} ${f2(Math.abs(sp)*100,1)}%（美国 ${usd(us.price)}）`,
       `<a href="${esc(cn.url)}" target="_blank" rel="noopener">${esc(cn.source)}</a> · ¥${f2(cn.price)} · ${esc(cn.as_of)}`));
   }
-  const pb = paybackRows(0.7, 0.3).filter(x => isFinite(x.months)).sort((a,b) => a.months-b.months)[0];
-  if (pb) out.push(kpi("最快回本（默认假设）", f2(pb.months,1), "个月", null, `${pb.label}`, "利用率 70%，运营成本 $0.30/卡时，见下方计算器"));
+  const pb = paybackRows(0.7, 0.3, "spot").filter(x => isFinite(x.months)).sort((a,b) => a.months-b.months)[0];
+  if (pb) out.push(kpi("最快回本（默认假设）", f2(pb.months,1), "个月", null, `${pb.label}`, "现货租金，利用率 70%，运营成本 $0.30/卡时"));
   $("#kpis").innerHTML = out.join("");
 }
 
@@ -345,28 +364,83 @@ function renderSpread(){
   $("#spread").innerHTML = `<div style="overflow-x:auto"><svg viewBox="0 0 ${W} ${H}" style="min-width:460px" role="img" aria-label="各型号租金区间与中美对比">${g}</svg></div><p class="note">横轴为平方根刻度，便于同时看清 $0.5 和 $20 的型号。右侧数字为美国代表价（无美国价时为中国价）。</p>`;
 }
 
+/* ---------- term structure ---------- */
+const TERM = {spot:"现货", "1y":"1 年", "3y":"3 年", "5y":"5 年"};
+const BASIS = {published:"公开报价", deal:"合同折算", estimate:"估算"};
+function contractBy(region, key, term){ return (D.contracts||[]).find(c => c.region===region && c.gpu_key===key && c.term===term && c.channel!=="hyperscaler"); }
+const toUSD = (v, unit) => unit && unit.startsWith("CNY") ? (FX ? v/FX : null) : v;
+function renderTerms(){
+  const C = D.contracts || [];
+  const keys = KEYS.filter(k => C.some(c => c.gpu_key===k));
+  const W=240, H=170, L=36, R=10, T=14, B=24, terms=["spot","1y","3y","5y"];
+  const X = i => L + i*(W-L-R)/3;
+  let html = "";
+  for (const key of keys){
+    const pts = [];
+    for (const region of ["US","CN"]){
+      const sp = rentBy(region, key);
+      if (sp) pts.push({region, term:"spot", price:toUSD(sp.price, sp.unit), low:toUSD(sp.price,sp.unit), high:toUSD(sp.price,sp.unit), basis:"published", channel:"market", method:"现货代表价", source:sp.source, as_of:sp.as_of, raw:sp.price, unit:sp.unit});
+      for (const c of C.filter(c => c.region===region && c.gpu_key===key))
+        pts.push({...c, raw:c.price, price:toUSD(c.price,c.unit), low:toUSD(c.low??c.price,c.unit), high:toUSD(c.high??c.price,c.unit)});
+    }
+    const vals = pts.flatMap(p => [p.price, p.high]).filter(v => v!=null);
+    const top = Math.max(...vals) * 1.15;
+    const step = niceStep(top/3);
+    const ymax = Math.ceil(top/step)*step;
+    const Y = v => T + (1 - v/ymax)*(H-T-B);
+    let g = "";
+    for (let v=0; v<=ymax+1e-9; v+=step) g += `<line class="gl" x1="${L}" x2="${W-R}" y1="${Y(v)}" y2="${Y(v)}"/><text x="${L-5}" y="${Y(v)+4}" text-anchor="end">${f2(v, Number.isInteger(step)?0:(step*10%1===0?1:2))}</text>`;
+    terms.forEach((t,i) => g += `<text x="${X(i)}" y="${H-6}" text-anchor="middle">${TERM[t]}</text>`);
+    for (const region of ["US","CN"]){
+      const col = region==="US" ? "var(--us)" : "var(--cn)";
+      const line = terms.map((t,i) => [i, pts.find(p => p.region===region && p.term===t && p.channel!=="hyperscaler")]).filter(x => x[1] && x[1].price!=null);
+      if (line.length>1) g += `<path d="${line.map(([i,p],j)=>(j?"L":"M")+X(i).toFixed(1)+" "+Y(p.price).toFixed(1)).join(" ")}" fill="none" stroke="${col}" stroke-width="2" stroke-linejoin="round"/>`;
+      for (const p of pts.filter(p => p.region===region && p.price!=null)){
+        const i = terms.indexOf(p.term), x = X(i) + (region==="US"?-4:4), y = Y(p.price);
+        const cur = p.unit.startsWith("CNY") ? "¥" : "$";
+        const tipT = `<b>${esc(key)} ${REGION[region]} · ${TERM[p.term]}</b>${p.channel==="hyperscaler"?"（超大云）":""}<br><b>${usd(p.price)}</b>${cur==="¥"?`（¥${f2(p.raw)}）`:""}${p.low!==p.high?` · 区间 ${usd(p.low)}–${usd(p.high)}`:""}<br>${BASIS[p.basis]||""}：${esc(p.method)}<br>${esc(p.source)} · ${esc(p.as_of)}`;
+        if (p.high>p.low) g += `<line x1="${x}" x2="${x}" y1="${Y(p.low)}" y2="${Y(p.high)}" stroke="${col}" stroke-width="2" opacity=".35"/>`;
+        if (p.channel==="hyperscaler") g += `<rect x="${x-4}" y="${y-4}" width="8" height="8" transform="rotate(45 ${x} ${y})" fill="var(--muted)"/>`;
+        else g += `<circle cx="${x}" cy="${y}" r="4.5" fill="${p.basis==="estimate"?"var(--panel)":col}" stroke="${p.basis==="estimate"?col:"var(--panel)"}" stroke-width="2"/>`;
+        g += `<circle cx="${x}" cy="${y}" r="11" fill="transparent" data-tip="${esc(tipT)}"/>`;
+      }
+    }
+    html += `<div class="term"><h3>${esc(key)}</h3><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(key)} 期限曲线">${g}</svg></div>`;
+  }
+  $("#terms").innerHTML = html || "<p class='note'>暂无长协数据</p>";
+  const n = C.length, est = C.filter(c => c.basis==="estimate").length;
+  $("#term-note").textContent = `共 ${n} 个长协数据点，其中 ${est} 个为估算。美国没有公开的 5 年价目表，5 年价来自大额合同折算或估算；中国长协主要来自 SMM 成交样本（台·月 ÷ 8 ÷ 730）。`;
+  $("#ctr").innerHTML = C.map(c => { const cur = c.unit.startsWith("CNY") ? "¥" : "$"; return `<tr><td><span class="tag ${c.region}">${REGION[c.region]}</span></td><td>${esc(c.gpu_key)}</td><td>${TERM[c.term]}${c.channel==="hyperscaler"?"（超大云）":""}</td>
+    <td class="n">${cur}${f2(c.price)}</td><td class="n">${c.low!==c.high?cur+f2(c.low)+"–"+f2(c.high):"—"}</td><td>${BASIS[c.basis]}</td><td>${esc(c.method)}</td>
+    <td><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.source)}</a> · ${esc(c.as_of)}</td></tr>`; }).join("");
+}
+
 /* ---------- payback ---------- */
-function paybackRows(util, opexUSD){
+function paybackRows(util, opexUSD, mode){
   const out = [];
   for (const p of D.purchase){
     const key = p.gpu && p.gpu!=="other" ? p.gpu : keyOf(p.item);
     if (!key || !p.cards) continue;
     const region = p.region==="Global" ? "US" : p.region;
-    const r = rentBy(region, key); if (!r) continue;
+    const spot = rentBy(region, key); if (!spot) continue;
     const cny = p.unit==="CNY";
-    if (cny && !r.unit.startsWith("CNY")) continue;
+    if (cny && !spot.unit.startsWith("CNY")) continue;
+    const ct = mode && mode!=="spot" ? contractBy(region, key, mode) : null;
+    const r = ct ? {...spot, price: ct.price, source: ct.source + "（" + TERM[mode] + "长协）", as_of: ct.as_of} : spot;
+    const fallback = mode && mode!=="spot" && !ct;
     const card = p.price / p.cards;
     const opex = cny ? opexUSD * (FX||7) : opexUSD;
     const net = r.price - opex;
     const months = net > 0 ? card / (net * 730 * util) : Infinity;
-    out.push({label:`${REGION[region]} ${p.item}（${p.channel}）`, region, key, card, cny, rent:r.price, months, p, r});
+    out.push({label:`${REGION[region]} ${p.item}（${p.channel}）`, region, key, card, cny, rent:r.price, months, p, r, fallback, rentSrc:r.source});
   }
   return out;
 }
 function renderPay(){
   const util = $("#util").value/100, opex = +$("#opex").value;
   $("#util-o").textContent = Math.round(util*100)+"%"; $("#opex-o").textContent = usd(opex);
-  const rows = paybackRows(util, opex).sort((a,b) => a.months-b.months);
+  const mode = $("#mode").value;
+  const rows = paybackRows(util, opex, mode).sort((a,b) => a.months-b.months);
   const W=1100, L=330, R=70, rowH=30, T=8, H=T+rows.length*rowH+20;
   const fin = rows.filter(r=>isFinite(r.months)).map(r=>r.months);
   const top = Math.max(48, Math.ceil(Math.max(...fin, 36)/12)*12);
@@ -377,10 +451,10 @@ function renderPay(){
     const y = T + i*rowH;
     const c = r.region==="CN" ? "var(--cn)" : "var(--us)";
     const cur = r.cny ? "¥" : "$";
-    const t = `<b>${esc(r.label)}</b><br>每卡 ${cur}${f2(r.card,0)} · 租金 ${cur}${f2(r.rent)}/卡时<br>回本 <b>${isFinite(r.months)?f2(r.months,1)+" 个月":"租金低于成本，回不了本"}</b><br>${esc(r.p.source)} · ${esc(r.p.as_of)}`;
+    const t = `<b>${esc(r.label)}</b><br>每卡 ${cur}${f2(r.card,0)} · 租金 ${cur}${f2(r.rent)}/卡时<br>租金口径：${esc(r.rentSrc)}${r.fallback?"（无该期限数据，用现货）":""}<br>回本 <b>${isFinite(r.months)?f2(r.months,1)+" 个月":"租金低于成本，回不了本"}</b><br>${esc(r.p.source)} · ${esc(r.p.as_of)}`;
     g += `<text class="lbl" x="${L-10}" y="${y+rowH/2+4}" text-anchor="end">${esc(r.region==="CN"?"中国":"美国")} ${esc(r.p.item.replace(/（.*?）/g,""))} · ${esc(r.p.channel.replace(/（.*?）/g,"").slice(0,8))}</text>`;
     if (isFinite(r.months)){
-      g += `<rect x="${L}" y="${y+6}" width="${Math.max(3,X(r.months)-L)}" height="${rowH-12}" rx="4" fill="${c}"/>`;
+      g += `<rect x="${L}" y="${y+6}" width="${Math.max(3,X(r.months)-L)}" height="${rowH-12}" rx="4" fill="${c}" opacity="${r.fallback?0.45:1}"/>`;
       g += `<text class="val" x="${X(r.months)+6}" y="${y+rowH/2+4}">${r.months>top?"＞":""}${f2(Math.min(r.months,999),1)}</text>`;
     } else g += `<text x="${L+6}" y="${y+rowH/2+4}">租金 ≤ 成本</text>`;
     g += `<rect x="0" y="${y}" width="${W}" height="${rowH}" fill="transparent" data-tip="${esc(t)}"/>`;
@@ -416,9 +490,9 @@ async function main(){
   HIST = (await Promise.all(days.slice(-120).map(d => get(`data/history/${d}.json`)))).filter(Boolean);
   const t = new Date(D.updated_at);
   $("#meta").textContent = "更新于 " + t.toLocaleString("zh-CN",{timeZone:"Asia/Shanghai",hour12:false}) + " 北京时间" + (FX ? ` · USD/CNY ${FX}` : "");
-  renderKPIs(); renderRoutes(); renderTrend(); renderSpread(); renderPay(); renderDetails();
+  renderKPIs(); renderRoutes(); renderTrend(); renderSpread(); renderTerms(); renderPay(); renderDetails();
   $("#trend-tabs").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (b){ trendKey = b.dataset.k; renderTrend(); } });
-  $("#util").addEventListener("input", renderPay); $("#opex").addEventListener("input", renderPay);
+  $("#util").addEventListener("input", renderPay); $("#mode").addEventListener("change", renderPay); $("#opex").addEventListener("input", renderPay);
 }
 main();
 </script>

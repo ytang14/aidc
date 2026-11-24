@@ -43,7 +43,7 @@ GPU_KEYS = ["GB300", "GB200", "B300", "B200", "H200", "H100", "H800", "H20", "A1
 SCHEMA = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["updated_at", "fx_usdcny", "fx_as_of", "fx_source", "fx_url", "headline", "rental", "purchase", "regulation", "opportunities", "routes"],
+    "required": ["updated_at", "fx_usdcny", "fx_as_of", "fx_source", "fx_url", "headline", "rental", "purchase", "regulation", "opportunities", "routes", "contracts"],
     "properties": {
         "updated_at": {"type": "string"},
         "fx_usdcny": {"type": "number", "description": "人民币兑美元中间价"},
@@ -83,6 +83,22 @@ SCHEMA = {
                 "impact": {"type": "string", "description": "对价格/供给的影响"},
                 "direction": {"type": "string", "enum": ["tighten", "loosen", "neutral"]},
                 "source": {"type": "string"}, "url": {"type": "string"}}}},
+        "contracts": {"type": "array", "description": "长协价格：1/3/5 年，实测与估算分开", "items": {
+            "type": "object", "additionalProperties": False,
+            "required": ["region", "gpu_key", "term", "price", "low", "high", "unit", "channel", "basis", "method", "source", "url", "as_of", "confidence"],
+            "properties": {
+                "region": {"type": "string", "enum": ["US", "CN"]},
+                "gpu_key": {"type": "string", "enum": GPU_KEYS},
+                "term": {"type": "string", "enum": ["1y", "3y", "5y"]},
+                "price": {"type": "number", "description": "折算为每卡每小时"},
+                "low": {"type": "number", "description": "区间下限，无区间则等于 price"}, "high": {"type": "number"},
+                "unit": {"type": "string", "enum": ["USD/GPU·h", "CNY/卡·h"]},
+                "channel": {"type": "string", "enum": ["market", "hyperscaler"], "description": "hyperscaler=AWS/Azure/GCP 承诺价，其余为市场价"},
+                "basis": {"type": "string", "enum": ["published", "deal", "estimate"],
+                          "description": "published=公开价目/报价，deal=由披露合同金额折算，estimate=推算"},
+                "method": {"type": "string", "description": "一句话写明怎么得到/折算的，含公式和假设"},
+                "source": {"type": "string"}, "url": {"type": "string"}, "as_of": {"type": "string"},
+                "confidence": {"type": "string", "enum": ["high", "medium", "low"]}}}},
         "routes": {"type": "array", "description": "算力倒卖通道状态，每条一句话", "items": {
             "type": "object", "additionalProperties": False,
             "required": ["route", "status", "since", "note", "url"],
@@ -108,7 +124,8 @@ RESEARCH_PROMPT = """今天是 {today}。你是 AI 算力市场分析师。请�
 4. 监管：近 30 天美国出口管制（BIS 规则、许可、远程访问）、中国进口/国产替代/数据中心与算力政策、
    其他影响供给的规定。
 5. 基于以上数据的 3-5 个产业机会（写明依据），读者是算力倒卖者：关注进货价与售价的价差、回本周期、通道风险。
-6. 通道状态：美国境内、海外机房→中资、H200→中国大陆、东南亚进货、第三方转租、国产卡等通道当前是开放/需许可/关闭。
+6. 长协价格（1 年 / 3 年 / 5 年）：美国查各云厂商和 neocloud 的 1 年/3 年承诺价、披露的大额合同（金额÷卡数÷年数÷8760）；中国查 Mysteel 闭口/年签月租、A股算力租赁合同公告。没有直接数据时，用同型号现货价 × 公开的期限折扣率给出 best estimate，标 basis=estimate 并写明公式。上一期数据里的长协条目如果没有更新的来源，可以沿用。
+7. 通道状态：美国境内、海外机房→中资、H200→中国大陆、东南亚进货、第三方转租、国产卡等通道当前是开放/需许可/关闭。
 租赁价每行给出三个数：代表价（成交指数优先）、市场地板价（最便宜 neocloud/spot）、超大云按需价。
 
 每个数字必须附来源名称、URL 和来源标注的日期；找不到就不写，不要估算。
