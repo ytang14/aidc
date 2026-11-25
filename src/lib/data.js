@@ -168,7 +168,7 @@ const annuity = (P, r, n) => (n <= 0 ? 0 : r === 0 ? P / n : (P * r) / (1 - Math
 function capexRows(M, key, region) {
   const { D, FX, CI } = M;
   const ci = region === "US" && CI?.capex_us?.[key];
-  if (ci) return { low: ci.low, mid: ci.mid, high: ci.high, src: ci, nvl: ci.basis === "整柜", confidence: "medium", from: "cost_inputs" };
+  if (ci) return { low: ci.low, mid: ci.mid, high: ci.high, src: ci, nvl: ci.basis === "整柜", confidence: ci.tier_est ? "low" : "medium", from: "cost_inputs" };
   const rows = (D.purchase || []).filter((p) => {
     const k = p.gpu && p.gpu !== "other" ? p.gpu : keyOf(p.item);
     return k === key && (p.region === "Global" ? "US" : p.region) === region && p.cards > 0;

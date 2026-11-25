@@ -3,7 +3,7 @@
   "note": "人工核对的成本输入，每日刷新不会覆盖。美国新购价为服务器/整柜级每卡价（不含机房建造），多来源交叉核对。",
   "capex_us": {
     "GB300": {
-      "low": 55400,
+      "low": 62000,
       "mid": 69000,
       "high": 69900,
       "basis": "整柜",
@@ -28,12 +28,15 @@
         }
       ],
       "disagree": "大摩 $3.99M 是 ODM / 超大云拿货口径，作为下沿；中值取 Wing 的 neocloud 采购订单价，与 B300 的渠道价同口径。同口径下 GB300 每卡比 HGX B300 贵约 10%：整柜含 36 颗 Grace CPU、NVLink 72 卡交换托盘、液冷和电源架，按大摩 BOM，GPU 本身约 $35K/卡，其余约 $20K/卡是这些配套。$6–6.5M 的媒体数字是离群值，不采用。",
-      "channel": "neocloud 采购价为中值"
+      "channel": "neocloud 采购价为中值",
+      "tier_est": false,
+      "tier_how": "直接报价：Wing VC neocloud 采购订单 $5.0M/柜。下沿 $62K 为大摩价按比值换算后的区间中点",
+      "hs_mid": 55407
     },
     "GB200": {
-      "low": 39000,
-      "mid": 43000,
-      "high": 47200,
+      "low": 48500,
+      "mid": 53600,
+      "high": 58800,
       "basis": "整柜",
       "sources": [
         {
@@ -55,10 +58,13 @@
           "quote": "算力硬件 $3.4M/柜 → $47.2K（另有 $2.5M 机房建设不计入）"
         }
       ],
-      "disagree": "没有找到 2026 年 9–11 月的 GB200 报价，全是 2024–2025 年数字，现价可能更低。"
+      "disagree": "没有找到 2026 年 9–11 月的 GB200 报价，全是 2024–2025 年数字，现价可能更低。",
+      "tier_est": true,
+      "tier_how": "没有 neocloud 口径报价。HSBC / Barron's / Bernstein 的 $3.0–3.4M/柜（$42–47K）属超大云 / 分析师口径，÷ 0.803 换算到 neocloud 批量价。2024–25 年数据，现价可能更低",
+      "hs_mid": 43041
     },
     "B300": {
-      "low": 50000,
+      "low": 56000,
       "mid": 62500,
       "high": 70900,
       "basis": "8 卡整机",
@@ -83,12 +89,15 @@
         }
       ],
       "disagree": "中值取 Spheron DGX B300 区间上沿与 Hashrate Index 的 $500K（$62.5K）；上沿是 Supermicro 官网单台挂牌价 $70.9K（零售口径）；下沿是 Spheron $400K。iFactory 的 $300–350K 偏低，不采用。B300 没有找到超大云 / ODM 口径的报价，所以不能拿它和大摩的 GB300 $55K 直接比。",
-      "channel": "渠道价"
+      "channel": "渠道价",
+      "tier_est": false,
+      "tier_how": "直接报价：Hashrate Index 约 $500K、Spheron DGX B300 上沿 $500K。上沿是 Supermicro 单台挂牌价（零售）",
+      "hs_mid": 50188
     },
     "B200": {
       "low": 45000,
-      "mid": 52000,
-      "high": 64400,
+      "mid": 51900,
+      "high": 58800,
       "basis": "8 卡整机",
       "sources": [
         {
@@ -110,12 +119,15 @@
           "quote": "$515,410 → $64.4K"
         }
       ],
-      "disagree": "DGX 品牌机比 HGX OEM 贵约 20%。"
+      "disagree": "DGX 品牌机比 HGX OEM 贵约 20%。",
+      "tier_est": false,
+      "tier_how": "直接报价：American Compute 新机 $360–470K（中值 $415K），属经销商批量口径",
+      "hs_mid": 41676
     },
     "H200": {
       "low": 40100,
       "mid": 42500,
-      "high": 52500,
+      "high": 46000,
       "basis": "8 卡整机",
       "sources": [
         {
@@ -137,7 +149,10 @@
           "quote": "$320–420K → $40–52.5K"
         }
       ],
-      "disagree": "新货稀缺，二手 H200 成交价不低于新机。"
+      "disagree": "新货稀缺，二手 H200 成交价不低于新机。",
+      "tier_est": false,
+      "tier_how": "直接报价：American Compute 新机批量约 $340K；Supermicro 起价 $320.5K 为下沿",
+      "hs_mid": 34128
     },
     "H100": {
       "low": 31000,
@@ -169,7 +184,10 @@
         "low": 18800,
         "mid": 24400,
         "high": 25000
-      }
+      },
+      "tier_est": false,
+      "tier_how": "直接报价：新机库存尾货 $250–320K",
+      "hs_mid": 28587
     }
   },
   "vintage_us": {
@@ -422,5 +440,10 @@
       "GB300": 2.31
     },
     "note": "超大云融资成本低（约 4–9%），neocloud 一般高 20–40%。本表 SOFR+800bps ≈ 11.9% 是偏保守的高成本假设：Applied Digital 项目贷 SOFR+400–475，IREN GPU 融资 6–9.5%。"
+  },
+  "tier": {
+    "name": "neocloud 批量采购（千卡级订单）",
+    "hs_ratio": 0.803,
+    "note": "所有型号统一按 neocloud 千卡级批量采购价比较。超大云 / ODM 口径 ≈ neocloud 价 × 0.803（由 GB300 两档报价推出：大摩 $55.4K ÷ Wing 采购订单 $69K）。单台挂牌价是零售口径，只作上沿。某档没有直接报价时，用这个比值换算，标为估算。"
   }
 }

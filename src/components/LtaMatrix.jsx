@@ -56,7 +56,7 @@ function Num({ label, value, onChange, step, min, max, suffix, w = "w-14" }) {
 }
 
 const TIER = { newc: "新购全成本", vint: "存量成本", cash: "现金成本底线" };
-function CostCell({ hc, tier, spot, region, gpu, FX, a, sofr, first }) {
+function CostCell({ hc, tier, spot, region, gpu, FX, a, sofr, first, M }) {
   const v = hc?.[tier];
   const cls = "px-3 py-2.5 text-right align-top bg-panel-2/60" + (first ? " border-l border-line" : "");
   if (!v) return <td className={cls + " text-muted"}>—</td>;
@@ -71,6 +71,7 @@ function CostCell({ hc, tier, spot, region, gpu, FX, a, sofr, first }) {
       {tier === "newc" && <>
         <div className="text-ink-2">按今天的采购价新建。每卡 {usd(v.cap.low, 0)} / {usd(v.cap.mid, 0)} / {usd(v.cap.high, 0)}（低/中/高）{v.cap.nvl ? "，整柜价已含 NVLink" : ""}，加网络与安装 {f2(hc.ovh * 100, 0)}%。</div>
         <div className="text-ink-2">资金 {f2(hc.r * 100)}%（SOFR {f2(sofr)}% + {f2(a.spread * 100, 0)}bps），{100 - a.down}% 贷款、{a.down}% 定金，{a.years} 年等额本息，折旧到零。</div>
+        {v.cap.src?.tier_how && <div className="text-[11px]"><span className={v.cap.src.tier_est ? "font-medium text-mid" : "font-medium"}>{v.cap.src.tier_est ? "估算" : "实测"}</span> · 口径：{M.CI?.tier?.name}。{v.cap.src.tier_how}。超大云口径约 {usd(v.cap.src.hs_mid, 0)}/卡。</div>}
         {v.cap.src?.sources && <div className="space-y-0.5 border-t border-line pt-1">{v.cap.src.sources.map((x, i) => <div key={i} className="text-[11px]">{x.name}（{x.date}）：{x.quote}</div>)}
           {v.cap.src.disagree && <div className="text-[11px] text-muted">分歧：{v.cap.src.disagree}</div>}</div>}
         {v.cap.rows && <div className="space-y-0.5 border-t border-line pt-1">{v.cap.rows.map((x, i) => <div key={i} className="text-[11px]">{x.p.item} · {x.p.channel}：每卡 {usd(x.card, 0)}{x.single ? "（单卡 +30% 主机）" : ""}（{x.p.source} · {x.p.as_of}）</div>)}</div>}
@@ -140,6 +141,7 @@ export function LtaMatrix({ M }) {
         </div>
         <p className="num mt-2 text-[11px] leading-relaxed text-muted">
           每卡时成本 = [ 贷款等额本息 PMT(C×{100 - a.down}%, {f2(sofr + a.spread)}%, {a.years}年) + 定金回收 PMT(C×{a.down}%, {a.equity}%, {a.years}年) + 电费 + 托管 + 维护 ] ÷ (8760 × {a.util}%)。C = 每卡采购价 × (1 + 网络与安装，HGX 15% / NVL72 12%)。电费 = 每卡功耗 kW × PUE × 8760 × 电价，托管 = kW × $/kW·月 × 12。残值按 0。存量成本按当年采购价，过了折旧期资本成本为 0；现金底线只算运营支出。
+          {M.CI?.tier?.note && <><br />采购价口径：{M.CI.tier.note}</>}
           {M.CI?.ops?.US?.build_check && <><br />交叉核对：{M.CI.ops.US.build_check} {M.CI.ops.CN?.build_check}</>}
           {M.CI?.benchmarks && <><br />外部对照：{M.CI.benchmarks.name}，每卡时 {Object.entries(M.CI.benchmarks.values).map(([k, v]) => `${k} $${v}`).join("、")}。{M.CI.benchmarks.note}</>}
         </p>
@@ -166,7 +168,7 @@ export function LtaMatrix({ M }) {
                     <td className="px-3 py-2.5 align-top font-semibold">{i === 0 ? key : ""}</td>
                     <td className="px-3 py-2.5 align-top"><RegionBadge region={region} label={REGION[region]} /></td>
                     {TERMS.map((t) => <Cell key={t} v={g[t]} t={t} spot={g.spot?.usd} region={region} gpu={key} FX={M.FX} />)}
-                    {(() => { const hc = holdingCost(M, key, region, a); return ["newc", "vint", "cash"].map((t, j) => <CostCell key={t} hc={hc} tier={t} first={j === 0} spot={g.spot?.usd} region={region} gpu={key} FX={M.FX} a={a} sofr={sofr} />); })()}
+                    {(() => { const hc = holdingCost(M, key, region, a); return ["newc", "vint", "cash"].map((t, j) => <CostCell key={t} M={M} hc={hc} tier={t} first={j === 0} spot={g.spot?.usd} region={region} gpu={key} FX={M.FX} a={a} sofr={sofr} />); })()}
                   </tr>
                 );
               });
