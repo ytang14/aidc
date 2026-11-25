@@ -74,6 +74,14 @@ svg .ax{stroke:var(--line);stroke-width:1}
 .calc label{display:flex;align-items:center;gap:8px}
 .calc input[type=range]{width:130px;accent-color:var(--us)}
 .calc output{font-family:var(--f-num);color:var(--ink);min-width:52px}
+.lta td.n{font-family:var(--f-num);white-space:nowrap}
+.lta td.n b{font-size:15px;font-weight:600}
+.lta td.n small{display:block;color:var(--muted);font-size:11px}
+.lta td.n.miss{color:var(--muted)}
+.lta td.n.filled b{color:var(--ink2);font-weight:400}
+.est-mk.fill{border-style:dotted}
+.lta tr.k1 td{border-top:2px solid var(--line)}
+.est-mk{font-style:normal;font-size:10px;border:1px dashed var(--muted);color:var(--muted);border-radius:3px;padding:0 3px;margin-left:4px;vertical-align:1px}
 .terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
 .term h3{font-size:13px;margin:0 0 2px;font-family:var(--f-num)}
 .calc select{font:inherit;font-size:12px;background:var(--panel);color:var(--ink);border:1px solid var(--line);border-radius:4px;padding:2px 6px}
@@ -109,6 +117,12 @@ td a{color:var(--ink2)}
   </header>
 
   <section class="kpis" id="kpis" aria-label="关键价格"></section>
+
+  <section class="panel" aria-labelledby="h-lta">
+    <div class="ph"><div><h2 id="h-lta">现货 vs 长协（LTA）价格</h2><p>USD / GPU·小时，中国价按中间价折算（括号内为人民币）。小字为相对现货折扣。<i class="est-mk">估</i> = 调研估算，<i class="est-mk fill">推</i> = 按期限比值推算，悬停看推导</p></div></div>
+    <div class="tbl"><table class="lta"><thead><tr><th>型号</th><th>地区</th><th style="text-align:right">现货</th><th style="text-align:right">1 年 LTA</th><th style="text-align:right">3 年 LTA</th><th style="text-align:right">5 年 LTA</th></tr></thead><tbody id="lta"></tbody></table></div>
+    <p class="note" id="lta-note"></p>
+  </section>
 
   <section class="panel" aria-labelledby="h-routes">
     <div class="ph"><div><h2 id="h-routes">通道状态</h2><p>哪些买卖路线现在能走</p></div></div>
@@ -415,6 +429,80 @@ function renderTerms(){
     <td><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.source)}</a> · ${esc(c.as_of)}</td></tr>`; }).join("");
 }
 
+
+const TERMS = ["spot","1y","3y","5y"];
+const median = a => { const v=[...a].sort((x,y)=>x-y), n=v.length; return n? (n%2? v[(n-1)/2] : (v[n/2-1]+v[n/2])/2) : null; };
+/* 相邻期限比值（同地区、同型号的实测/估算点两两相比）取中位数，用来补空格 */
+function termRatios(region, grid){
+  const out = {};
+  for (let i=1;i<TERMS.length;i++){
+    const rs = Object.values(grid).map(g => g[TERMS[i-1]] && g[TERMS[i]] && !g[TERMS[i-1]].fill && !g[TERMS[i]].fill ? g[TERMS[i]].usd / g[TERMS[i-1]].usd : null).filter(v => v);
+    out[TERMS[i]] = {r: median(rs), n: rs.length};
+  }
+  return out;
+}
+function ltaGrid(){
+  const C = D.contracts || [], res = {};
+  const keys = KEYS.filter(k => C.some(c => c.gpu_key===k && c.channel!=="hyperscaler"));
+  for (const region of ["US","CN"]){
+    const grid = {};
+    for (const key of keys){
+      const sp = rentBy(region, key), cs = {};
+      for (const t of ["1y","3y","5y"]){ const c = contractBy(region, key, t); if (c) cs[t] = {...c, usd: toUSD(c.price, c.unit)}; }
+      if (!Object.keys(cs).length) continue;
+      grid[key] = {...cs};
+      if (sp) grid[key].spot = {price: sp.price, unit: sp.unit, usd: toUSD(sp.price, sp.unit), source: sp.source, as_of: sp.as_of, spot:true};
+    }
+    const R = termRatios(region, grid);
+    for (const g of Object.values(grid)){
+      // 向后（更长期限）推，再向前推
+      for (let pass=0; pass<2; pass++) for (let i=1;i<TERMS.length;i++){
+        const a = TERMS[i-1], b = TERMS[i], rr = R[b];
+        if (!rr.r) continue;
+        if (g[a] && !g[b] && (a!=="spot")) g[b] = {fill:true, usd: g[a].usd*rr.r, from:a, ratio:rr.r, n:rr.n};
+        if (g[b] && !g[a] && a!=="spot") g[a] = {fill:true, usd: g[b].usd/rr.r, from:b, ratio:1/rr.r, n:rr.n};
+      }
+    }
+    res[region] = {grid, R};
+  }
+  return {keys, res};
+}
+function renderLTA(){
+  const C = D.contracts || [];
+  const {keys, res} = ltaGrid();
+  let rows = "";
+  for (const key of keys){
+    let first = true;
+    for (const region of ["US","CN"]){
+      const g = res[region].grid[key]; if (!g) continue;
+      const spU = g.spot?.usd;
+      let tds = "";
+      for (const t of TERMS){
+        const c = g[t];
+        if (!c){ tds += `<td class="n miss">—</td>`; continue; }
+        const disc = (t!=="spot" && spU) ? c.usd/spU - 1 : null;
+        const dTxt = t==="spot" ? "现货" : disc==null ? (c.fill ? "推算" : BASIS[c.basis]) : (disc<=0 ? "低 "+f2(-disc*100,0)+"%" : "高 "+f2(disc*100,0)+"%");
+        const cny = region==="CN" && FX;
+        const cnyTxt = cny ? "¥"+f2(c.usd*FX)+" · " : "";
+        let tipT, mk = "";
+        if (t==="spot") tipT = `<b>${esc(key)} ${REGION[region]} 现货</b><br>${esc(c.source)} · ${esc(c.as_of)}`;
+        else if (c.fill){ mk = '<i class="est-mk fill">推</i>';
+          tipT = `<b>${esc(key)} ${REGION[region]} · ${TERM[t]} LTA（推算）</b><br>没有直接数据。= ${TERM[c.from]}价 × ${f2(c.ratio,3)}<br>比值取${REGION[region]}其他型号「${TERM[t>c.from?c.from:t]}→${TERM[t>c.from?t:c.from]}」实测比值的中位数（${c.n} 个样本）`; }
+        else { if (c.basis==="estimate") mk = '<i class="est-mk">估</i>';
+          tipT = `<b>${esc(key)} ${REGION[region]} · ${TERM[t]} LTA</b><br>${BASIS[c.basis]}：${esc(c.method)}${c.low!==c.high&&c.low!=null?`<br>区间 ${usd(toUSD(c.low,c.unit))}–${usd(toUSD(c.high,c.unit))}`:""}<br>${esc(c.source)} · ${esc(c.as_of)} · 置信度 ${esc(c.confidence||"")}`; }
+        tds += `<td class="n${c.fill?" filled":""}" data-tip="${esc(tipT)}"><b>${usd(c.usd)}</b>${mk}<small>${cnyTxt}${dTxt}</small></td>`;
+      }
+      rows += `<tr class="${first?"k1":""}"><td>${first?`<b>${esc(key)}</b>`:""}</td><td><span class="tag ${region}">${REGION[region]}</span></td>${tds}</tr>`;
+      first = false;
+    }
+  }
+  $("#lta").innerHTML = rows || "<tr><td colspan='6'>暂无长协数据</td></tr>";
+  const rTxt = ["US","CN"].map(rg => REGION[rg] + "：" + ["1y","3y","5y"].map(t => { const r = res[rg].R[t]; return r.r ? `${t==="1y"?"现货":TERM[TERMS[TERMS.indexOf(t)-1]]}→${TERM[t]} ×${f2(r.r,2)}` : null; }).filter(Boolean).join("，")).join("；");
+  const hs = C.filter(c => c.channel==="hyperscaler");
+  $("#lta-note").innerHTML = `<i class="est-mk fill">推</i> = 该型号没有这一期限的数据，用同地区其他型号的期限比值推算（${rTxt}）。` +
+    (hs.length ? "<br>超大云承诺价（参照，不计入上表）：" + hs.map(c => `${esc(c.gpu_key)} ${TERM[c.term]} ${c.unit.startsWith("CNY")?"¥":"$"}${f2(c.price)}（${esc(c.source)}）`).join("；") : "");
+}
+
 /* ---------- payback ---------- */
 function paybackRows(util, opexUSD, mode){
   const out = [];
@@ -490,7 +578,7 @@ async function main(){
   HIST = (await Promise.all(days.slice(-120).map(d => get(`data/history/${d}.json`)))).filter(Boolean);
   const t = new Date(D.updated_at);
   $("#meta").textContent = "更新于 " + t.toLocaleString("zh-CN",{timeZone:"Asia/Shanghai",hour12:false}) + " 北京时间" + (FX ? ` · USD/CNY ${FX}` : "");
-  renderKPIs(); renderRoutes(); renderTrend(); renderSpread(); renderTerms(); renderPay(); renderDetails();
+  renderKPIs(); renderLTA(); renderRoutes(); renderTrend(); renderSpread(); renderTerms(); renderPay(); renderDetails();
   $("#trend-tabs").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (b){ trendKey = b.dataset.k; renderTrend(); } });
   $("#util").addEventListener("input", renderPay); $("#mode").addEventListener("change", renderPay); $("#opex").addEventListener("input", renderPay);
 }
