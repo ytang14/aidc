@@ -149,3 +149,41 @@ export function paybackRows(M, util, opexUSD, mode) {
   }
   return out;
 }
+
+/* ---------- 持有成本（项目融资口径，每卡时盈亏平衡租金） ----------
+   C   = 每卡资本开支 = 采购价 ÷ 卡数 × (1 + 网络/存储/安装系数)；单卡 PCIe 再 × 1.3 计入主机
+   债务 D = C × (1 − 定金比例)，年利率 r = SOFR + 利差，n 年等额本息：PMT_D = D·r / (1 − (1+r)^−n)
+   股权 E = C × 定金比例，按股权回报率 h 年金回收（h = 0 时即直线折旧 E/n）
+   残值 0（n 年折旧到零）
+   每卡时成本 = (PMT_D + PMT_E + 运营成本 × 8760) ÷ (8760 × 利用率) */
+export const COST_DEFAULTS = { spread: 8.0, down: 30, years: 5, util: 85, opex: 0.3, overhead: 15, equity: 0 };
+const annuity = (P, r, n) => (r === 0 ? P / n : (P * r) / (1 - Math.pow(1 + r, -n)));
+
+export function holdingCost(M, key, region, a) {
+  const { D, FX } = M;
+  const rows = (D.purchase || []).filter((p) => {
+    const k = p.gpu && p.gpu !== "other" ? p.gpu : keyOf(p.item);
+    const rg = p.region === "Global" ? "US" : p.region;
+    return k === key && rg === region && p.cards > 0;
+  });
+  if (!rows.length) return null;
+  const r = ((D.sofr ?? 4) + a.spread) / 100, n = a.years, h = a.equity / 100, dn = a.down / 100;
+  const per = rows.map((p) => {
+    const single = p.cards === 1;
+    const card = (p.unit === "CNY" ? (FX ? p.price / FX : null) : p.price) / p.cards;
+    if (card == null) return null;
+    const C = card * (1 + a.overhead / 100) * (single ? 1.3 : 1);
+    const pmtD = annuity(C * (1 - dn), r, n), pmtE = annuity(C * dn, h, n);
+    const annual = pmtD + pmtE + a.opex * 8760;
+    return { p, single, card, C, pmtD, pmtE, usd: annual / (8760 * a.util / 100) };
+  }).filter(Boolean).sort((x, y) => x.usd - y.usd);
+  if (!per.length) return null;
+  const vals = per.map((x) => x.usd);
+  const mid = median(vals);
+  let lo = Math.min(...vals), hi = Math.max(...vals);
+  if (!(hi > lo)) { lo = mid * 0.9; hi = mid * 1.1; } // 只有一个报价时给 ±10%
+  const worst = per.some((x) => x.p.confidence === "low" || x.single) ? "low" : "medium";
+  const v = { basis: "estimate", confidence: worst, usd: mid, lo, hi, per, r };
+  v.conf = confOf(v);
+  return v;
+}

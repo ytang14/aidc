@@ -43,9 +43,11 @@ GPU_KEYS = ["GB300", "GB200", "B300", "B200", "H200", "H100", "H800", "H20", "A1
 SCHEMA = {
     "type": "object",
     "additionalProperties": False,
-    "required": ["updated_at", "fx_usdcny", "fx_as_of", "fx_source", "fx_url", "headline", "rental", "purchase", "regulation", "opportunities", "routes", "contracts"],
+    "required": ["updated_at", "sofr", "sofr_as_of", "sofr_source", "sofr_url", "fx_usdcny", "fx_as_of", "fx_source", "fx_url", "headline", "rental", "purchase", "regulation", "opportunities", "routes", "contracts"],
     "properties": {
         "updated_at": {"type": "string"},
+        "sofr": {"type": "number", "description": "最新 SOFR 年化百分比，如 3.92"},
+        "sofr_as_of": {"type": "string"}, "sofr_source": {"type": "string"}, "sofr_url": {"type": "string"},
         "fx_usdcny": {"type": "number", "description": "人民币兑美元中间价"},
         "fx_as_of": {"type": "string"}, "fx_source": {"type": "string"}, "fx_url": {"type": "string"},
         "headline": {"type": "array", "items": {"type": "string"}, "description": "今日 3-5 条要点，中文，每条不超过 40 字"},
@@ -123,7 +125,8 @@ RESEARCH_PROMPT = """今天是 {today}。你是 AI 算力市场分析师。请�
    做合理性检查：新一代（GB300 > GB200 > H200 > H100，B300 > B200）同口径下通常更贵，
    若出现倒挂，先核对是否口径不同，并在 note 里写明原因。
 2. 中国 GPU 租赁价（元/卡·小时）：H100/H800、H20、A100/A800、4090、昇腾 910B/910C。
-3. 购买价：H200/B200/B300 单卡与 8 卡整机（美国渠道价、中国渠道价与灰色市场价）、H20、昇腾 910C。
+3. 购买价：H200/B200/B300 单卡与 8 卡整机（美国渠道价、中国渠道价与灰色市场价）、GB200/GB300 NVL72 整柜（cards=72）、H20、昇腾 910C。
+   每条都填 gpu 和 cards（整机卡数），看板用它算每卡持有成本。上一期的采购条目没有更新来源时可以沿用。
 4. 监管：近 30 天美国出口管制（BIS 规则、许可、远程访问）、中国进口/国产替代/数据中心与算力政策、
    其他影响供给的规定。
 5. 基于以上数据的 3-5 个产业机会（写明依据），读者是算力倒卖者：关注进货价与售价的价差、回本周期、通道风险。
@@ -132,7 +135,7 @@ RESEARCH_PROMPT = """今天是 {today}。你是 AI 算力市场分析师。请�
 租赁价每行给出三个数：代表价（成交指数优先）、市场地板价（最便宜 neocloud/spot）、超大云按需价。
 
 每个数字必须附来源名称、URL 和来源标注的日期；找不到就不写，不要估算。
-二手/自媒体来源标 confidence=low。查当日人民币兑美元中间价（中国外汇交易中心），附日期和 URL。
+二手/自媒体来源标 confidence=low。查当日人民币兑美元中间价（中国外汇交易中心），附日期和 URL。查最新 SOFR（纽约联储），附日期和 URL。
 
 上一期数据（用于对比涨跌，不要直接照抄）：
 {previous}

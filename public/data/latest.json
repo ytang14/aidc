@@ -391,6 +391,48 @@
       "note": "来源日期为约 11/16。",
       "gpu": "H100",
       "cards": 1
+    },
+    {
+      "region": "US",
+      "unit": "USD",
+      "url": "https://www.spheron.network/blog/gb300-nvl72-vs-gb200-nvl72-pricing-availability-2026/",
+      "as_of": "2026-11-06",
+      "source": "Spheron（分析师估算汇总）",
+      "confidence": "low",
+      "item": "GB200 NVL72 整柜",
+      "gpu": "GB200",
+      "cards": 72,
+      "price": 3096000,
+      "channel": "分析师估算",
+      "note": "约 $43,000/GPU（整柜 ÷ 72）"
+    },
+    {
+      "region": "US",
+      "unit": "USD",
+      "url": "https://www.spheron.network/blog/gb300-nvl72-vs-gb200-nvl72-pricing-availability-2026/",
+      "as_of": "2026-11-06",
+      "source": "Spheron（分析师估算汇总）",
+      "confidence": "low",
+      "item": "GB300 NVL72 整柜（估算下沿）",
+      "gpu": "GB300",
+      "cards": 72,
+      "price": 3672000,
+      "channel": "分析师估算",
+      "note": "约 $51,000/GPU"
+    },
+    {
+      "region": "US",
+      "unit": "USD",
+      "url": "https://www.spheron.network/blog/gb300-nvl72-vs-gb200-nvl72-pricing-availability-2026/",
+      "as_of": "2026-11-06",
+      "source": "Spheron（分析师估算汇总）",
+      "confidence": "low",
+      "item": "GB300 NVL72 整柜（估算上沿）",
+      "gpu": "GB300",
+      "cards": 72,
+      "price": 6480000,
+      "channel": "分析师估算",
+      "note": "约 $90,000/GPU"
     }
   ],
   "regulation": [
@@ -1005,5 +1047,9 @@
       "as_of": "2026-11-20",
       "confidence": "high"
     }
-  ]
+  ],
+  "sofr": 3.92,
+  "sofr_as_of": "2026-11-23",
+  "sofr_source": "sofrrate.com（转载纽约联储）",
+  "sofr_url": "https://www.sofrrate.com/"
 }
