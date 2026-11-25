@@ -4,8 +4,8 @@
   "capex_us": {
     "GB300": {
       "low": 55400,
-      "mid": 62000,
-      "high": 69000,
+      "mid": 69000,
+      "high": 69900,
       "basis": "整柜",
       "sources": [
         {
@@ -24,10 +24,11 @@
           "name": "Wing VC（采购订单）",
           "date": "2026-08-31",
           "url": "https://www.wing.vc/content/how-much-does-an-nvidia-nvl72-cost",
-          "quote": "略低于 $5.0M/柜 → 约 $69K；部署后 $5.68M"
+          "quote": "略低于 $5.0M/柜 → 约 $69K；加 250kW CDU 约 $5.03M → $69.9K；部署后 $5.68M（含网络接入、安装，已由网络与安装系数覆盖）"
         }
       ],
-      "disagree": "大摩接近 ODM / 超大云拿货价，Wing 是 neocloud 采购订单价，差额是渠道加价。$6–6.5M 的媒体数字含额外配置，作为离群值不采用。"
+      "disagree": "大摩 $3.99M 是 ODM / 超大云拿货口径，作为下沿；中值取 Wing 的 neocloud 采购订单价，与 B300 的渠道价同口径。同口径下 GB300 每卡比 HGX B300 贵约 10%：整柜含 36 颗 Grace CPU、NVLink 72 卡交换托盘、液冷和电源架，按大摩 BOM，GPU 本身约 $35K/卡，其余约 $20K/卡是这些配套。$6–6.5M 的媒体数字是离群值，不采用。",
+      "channel": "neocloud 采购价为中值"
     },
     "GB200": {
       "low": 39000,
@@ -58,7 +59,7 @@
     },
     "B300": {
       "low": 50000,
-      "mid": 62000,
+      "mid": 62500,
       "high": 70900,
       "basis": "8 卡整机",
       "sources": [
@@ -81,7 +82,8 @@
           "quote": "新 B300 服务器约 $500K → $62.5K"
         }
       ],
-      "disagree": "官网单台挂牌价最高；批量采购价落在 $50–62K。iFactory 的 $300–350K 偏低，不采用。"
+      "disagree": "中值取 Spheron DGX B300 区间上沿与 Hashrate Index 的 $500K（$62.5K）；上沿是 Supermicro 官网单台挂牌价 $70.9K（零售口径）；下沿是 Spheron $400K。iFactory 的 $300–350K 偏低，不采用。B300 没有找到超大云 / ODM 口径的报价，所以不能拿它和大摩的 GB300 $55K 直接比。",
+      "channel": "渠道价"
     },
     "B200": {
       "low": 45000,
