@@ -1,0 +1,81 @@
+@import "tailwindcss";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+
+@custom-variant dark (&:where([data-theme="dark"], [data-theme="dark"] *));
+
+/* 颜色令牌：地区（美国蓝 / 中国紫）与置信度（高绿 / 中黄 / 低红）分开，两套不撞色 */
+:root {
+  --bg: #f6f7f9;
+  --panel: #ffffff;
+  --panel-2: #f1f3f6;
+  --ink: #0f172a;
+  --ink-2: #475569;
+  --muted: #8591a3;
+  --line: #e4e7ec;
+  --grid: #eef0f3;
+  --us: #2a78d6;
+  --cn: #7c5cd6;
+  --hs: #94a3b8;
+  --conf-hi: #0f9f6e;
+  --conf-mid: #b07800;
+  --conf-lo: #dc4a3b;
+  --conf-hi-bg: #e7f6f0;
+  --conf-mid-bg: #fbf3df;
+  --conf-lo-bg: #fcebe8;
+  --good: #0f9f6e;
+  --bad: #dc4a3b;
+  --warn: #b07800;
+  --shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 1px 3px rgba(15, 23, 42, 0.06);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b0f17; --panel: #121826; --panel-2: #182033; --ink: #e6eaf2; --ink-2: #a7b1c2; --muted: #6f7b8f;
+    --line: #232c3d; --grid: #1a2232; --us: #4c93ec; --cn: #9d85ee; --hs: #64748b;
+    --conf-hi: #2fc48d; --conf-mid: #f0b429; --conf-lo: #f2705f;
+    --conf-hi-bg: #0f2a22; --conf-mid-bg: #2e2510; --conf-lo-bg: #2f1714;
+    --good: #2fc48d; --bad: #f2705f; --warn: #f0b429;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b0f17; --panel: #121826; --panel-2: #182033; --ink: #e6eaf2; --ink-2: #a7b1c2; --muted: #6f7b8f;
+  --line: #232c3d; --grid: #1a2232; --us: #4c93ec; --cn: #9d85ee; --hs: #64748b;
+  --conf-hi: #2fc48d; --conf-mid: #f0b429; --conf-lo: #f2705f;
+  --conf-hi-bg: #0f2a22; --conf-mid-bg: #2e2510; --conf-lo-bg: #2f1714;
+  --good: #2fc48d; --bad: #f2705f; --warn: #f0b429;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+  color-scheme: dark;
+}
+
+@theme inline {
+  --color-bg: var(--bg);
+  --color-panel: var(--panel);
+  --color-panel-2: var(--panel-2);
+  --color-ink: var(--ink);
+  --color-ink-2: var(--ink-2);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-us: var(--us);
+  --color-cn: var(--cn);
+  --color-hi: var(--conf-hi);
+  --color-mid: var(--conf-mid);
+  --color-lo: var(--conf-lo);
+  --color-good: var(--good);
+  --color-bad: var(--bad);
+  --color-warn: var(--warn);
+  --font-sans: "Inter Variable", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono Variable", ui-monospace, Menlo, monospace;
+}
+
+html, body { background: var(--bg); color: var(--ink); }
+body { font-family: var(--font-sans); font-size: 14px; line-height: 1.55; -webkit-font-smoothing: antialiased; }
+.num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; }
+svg text { fill: var(--muted); font-family: var(--font-mono); font-size: 11px; }
+svg .lbl { fill: var(--ink); font-family: var(--font-sans); font-size: 12px; font-weight: 500; }
+svg .val { fill: var(--ink); font-size: 12px; font-weight: 600; }
+svg .gl { stroke: var(--grid); stroke-width: 1; }
+svg .ax { stroke: var(--line); stroke-width: 1; }
+:focus-visible { outline: 2px solid var(--us); outline-offset: 2px; }

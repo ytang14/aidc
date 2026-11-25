@@ -2,7 +2,7 @@
 // 在 Vercel 项目环境变量里设置 DASH_USER 和 DASH_PASS。
 export const config = { matcher: "/:path*" };
 
-const BLOCKED = [/^\/refresh\.py$/, /^\/\.github\//, /\.notes\.md$/, /^\/requirements\.txt$/];
+const BLOCKED = [/^\/src\//, /^\/package(-lock)?\.json$/, /^\/refresh\.py$/, /^\/\.github\//, /\.notes\.md$/, /^\/requirements\.txt$/];
 
 export default function middleware(request) {
   const url = new URL(request.url);

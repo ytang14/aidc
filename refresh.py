@@ -24,7 +24,7 @@ import sys
 import anthropic
 
 ROOT = pathlib.Path(__file__).resolve().parent
-DATA = ROOT / "data"
+DATA = ROOT / "public" / "data"
 HIST = DATA / "history"
 MODEL = "claude-opus-5-5"
 
