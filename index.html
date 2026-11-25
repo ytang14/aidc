@@ -12,18 +12,18 @@
 :root{
   --bg:#f4f5f3; --panel:#fcfcfb; --ink:#0b0b0b; --ink2:#52514e; --muted:#7a7974; --line:#e3e3df; --grid:#ecece8;
   --us:#2a78d6; --cn:#eb6834; --s3:#1baf7a;
-  --good:#0ca30c; --warn:#c98500; --bad:#d03b3b;
+  --good:#0ca30c; --warn:#c98500; --bad:#d03b3b; --est:#b87200; --inf:#7c5cd6;
   --good-bg:#e6f4e6; --warn-bg:#fbf1dc; --bad-bg:#f9e3e3;
   --f-body:"Noto Sans SC","PingFang SC","Microsoft YaHei",system-ui,sans-serif;
   --f-num:"JetBrains Mono",ui-monospace,Menlo,monospace;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#121211; --panel:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#8f8e86; --line:#2f2f2c; --grid:#262624;
-  --us:#3987e5; --cn:#d95926; --s3:#199e70; --good:#0ca30c; --warn:#fab219; --bad:#e66767;
+  --us:#3987e5; --cn:#d95926; --s3:#199e70; --good:#0ca30c; --warn:#fab219; --bad:#e66767; --est:#f0a830; --inf:#a48cf0;
   --good-bg:#16301a; --warn-bg:#3a2c10; --bad-bg:#3a1a1a; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#121211; --panel:#1a1a19; --ink:#f0efec; --ink2:#c3c2b7; --muted:#8f8e86; --line:#2f2f2c; --grid:#262624;
-  --us:#3987e5; --cn:#d95926; --s3:#199e70; --good:#0ca30c; --warn:#fab219; --bad:#e66767;
+  --us:#3987e5; --cn:#d95926; --s3:#199e70; --good:#0ca30c; --warn:#fab219; --bad:#e66767; --est:#f0a830; --inf:#a48cf0;
   --good-bg:#16301a; --warn-bg:#3a2c10; --bad-bg:#3a1a1a; color-scheme:dark}
 *{box-sizing:border-box}
 html,body{margin:0}
@@ -78,8 +78,14 @@ svg .ax{stroke:var(--line);stroke-width:1}
 .lta td.n b{font-size:15px;font-weight:600}
 .lta td.n small{display:block;color:var(--muted);font-size:11px}
 .lta td.n.miss{color:var(--muted)}
-.lta td.n.filled b{color:var(--ink2);font-weight:400}
-.est-mk.fill{border-style:dotted}
+.lta td.n.est b,.lta td.n.est small{color:var(--est)}
+.lta td.n.filled b,.lta td.n.filled small{color:var(--inf)}
+.lta td.n.est b,.lta td.n.filled b{font-size:13px}
+.est-mk.e{border:1px solid var(--est);color:var(--est)}
+.est-mk.fill{border:1px solid var(--inf);color:var(--inf)}
+.lta-legend{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin:0 0 8px}
+.lta-legend span{display:inline-flex;align-items:center;gap:6px}
+.lta-legend i.sw{width:10px;height:10px;border-radius:2px;display:inline-block}
 .lta tr.k1 td{border-top:2px solid var(--line)}
 .est-mk{font-style:normal;font-size:10px;border:1px dashed var(--muted);color:var(--muted);border-radius:3px;padding:0 3px;margin-left:4px;vertical-align:1px}
 .terms{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:12px}
@@ -119,7 +125,8 @@ td a{color:var(--ink2)}
   <section class="kpis" id="kpis" aria-label="关键价格"></section>
 
   <section class="panel" aria-labelledby="h-lta">
-    <div class="ph"><div><h2 id="h-lta">现货 vs 长协（LTA）价格</h2><p>USD / GPU·小时，中国价按中间价折算（括号内为人民币）。小字为相对现货折扣。<i class="est-mk">估</i> = 调研估算，<i class="est-mk fill">推</i> = 按期限比值推算，悬停看推导</p></div></div>
+    <div class="ph"><div><h2 id="h-lta">现货 vs 长协（LTA）价格</h2><p>USD / GPU·小时，中国价按中间价折算（括号内为人民币）。估算和推算显示为区间，小字是中值和相对现货的折扣。悬停看来源和推导</p></div></div>
+    <div class="lta-legend"><span><i class="sw" style="background:var(--ink)"></i>实测：公开报价 / 合同折算</span><span><i class="sw" style="background:var(--est)"></i>估：调研估算（有依据，无直接报价）</span><span><i class="sw" style="background:var(--inf)"></i>推：没有数据，按同系列比价或期限比值推算</span></div>
     <div class="tbl"><table class="lta"><thead><tr><th>型号</th><th>地区</th><th style="text-align:right">现货</th><th style="text-align:right">1 年 LTA</th><th style="text-align:right">3 年 LTA</th><th style="text-align:right">5 年 LTA</th></tr></thead><tbody id="lta"></tbody></table></div>
     <p class="note" id="lta-note"></p>
   </section>
@@ -156,7 +163,7 @@ td a{color:var(--ink2)}
     <div class="terms" id="terms"></div>
     <div class="legend">
       <span><i style="background:var(--us)"></i>美国市场</span><span><i style="background:var(--cn)"></i>中国国内</span>
-      <span><i class="dot" style="background:var(--ink2)"></i>公开报价 / 合同折算</span><span><i class="hollow"></i>估算（悬停看推导）</span>
+      <span><i class="dot" style="background:var(--ink2)"></i>公开报价 / 合同折算</span><span><i class="hollow" style="border-color:var(--est)"></i>估算（悬停看推导）</span>
       <span><i style="background:var(--muted);width:9px;height:9px;border-radius:0;transform:rotate(45deg)"></i>超大云承诺价（参照）</span>
     </div>
     <p class="note" id="term-note"></p>
@@ -415,7 +422,7 @@ function renderTerms(){
         const tipT = `<b>${esc(key)} ${REGION[region]} · ${TERM[p.term]}</b>${p.channel==="hyperscaler"?"（超大云）":""}<br><b>${usd(p.price)}</b>${cur==="¥"?`（¥${f2(p.raw)}）`:""}${p.low!==p.high?` · 区间 ${usd(p.low)}–${usd(p.high)}`:""}<br>${BASIS[p.basis]||""}：${esc(p.method)}<br>${esc(p.source)} · ${esc(p.as_of)}`;
         if (p.high>p.low) g += `<line x1="${x}" x2="${x}" y1="${Y(p.low)}" y2="${Y(p.high)}" stroke="${col}" stroke-width="2" opacity=".35"/>`;
         if (p.channel==="hyperscaler") g += `<rect x="${x-4}" y="${y-4}" width="8" height="8" transform="rotate(45 ${x} ${y})" fill="var(--muted)"/>`;
-        else g += `<circle cx="${x}" cy="${y}" r="4.5" fill="${p.basis==="estimate"?"var(--panel)":col}" stroke="${p.basis==="estimate"?col:"var(--panel)"}" stroke-width="2"/>`;
+        else g += `<circle cx="${x}" cy="${y}" r="4.5" fill="${p.basis==="estimate"?"var(--panel)":col}" stroke="${p.basis==="estimate"?"var(--est)":"var(--panel)"}" stroke-width="2"/>`;
         g += `<circle cx="${x}" cy="${y}" r="11" fill="transparent" data-tip="${esc(tipT)}"/>`;
       }
     }
@@ -425,7 +432,7 @@ function renderTerms(){
   const n = C.length, est = C.filter(c => c.basis==="estimate").length;
   $("#term-note").textContent = `共 ${n} 个长协数据点，其中 ${est} 个为估算。美国没有公开的 5 年价目表，5 年价来自大额合同折算或估算；中国长协主要来自 SMM 成交样本（台·月 ÷ 8 ÷ 730）。`;
   $("#ctr").innerHTML = C.map(c => { const cur = c.unit.startsWith("CNY") ? "¥" : "$"; return `<tr><td><span class="tag ${c.region}">${REGION[c.region]}</span></td><td>${esc(c.gpu_key)}</td><td>${TERM[c.term]}${c.channel==="hyperscaler"?"（超大云）":""}</td>
-    <td class="n">${cur}${f2(c.price)}</td><td class="n">${c.low!==c.high?cur+f2(c.low)+"–"+f2(c.high):"—"}</td><td>${BASIS[c.basis]}</td><td>${esc(c.method)}</td>
+    <td class="n">${cur}${f2(c.price)}</td><td class="n">${c.low!==c.high?cur+f2(c.low)+"–"+f2(c.high):"—"}</td><td${c.basis==="estimate"?' style="color:var(--est)"':""}>${BASIS[c.basis]}</td><td>${esc(c.method)}</td>
     <td><a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.source)}</a> · ${esc(c.as_of)}</td></tr>`; }).join("");
 }
 
@@ -437,7 +444,7 @@ function termRatios(region, grid){
   const out = {};
   for (let i=1;i<TERMS.length;i++){
     const rs = Object.values(grid).map(g => g[TERMS[i-1]] && g[TERMS[i]] && !g[TERMS[i-1]].fill && !g[TERMS[i]].fill ? g[TERMS[i]].usd / g[TERMS[i-1]].usd : null).filter(v => v);
-    out[TERMS[i]] = {r: median(rs), n: rs.length};
+    out[TERMS[i]] = {r: median(rs), lo: rs.length? Math.min(...rs):null, hi: rs.length? Math.max(...rs):null, n: rs.length};
   }
   return out;
 }
@@ -448,10 +455,10 @@ function ltaGrid(){
     const grid = {};
     for (const key of keys){
       const sp = rentBy(region, key), cs = {};
-      for (const t of ["1y","3y","5y"]){ const c = contractBy(region, key, t); if (c) cs[t] = {...c, usd: toUSD(c.price, c.unit)}; }
+      for (const t of ["1y","3y","5y"]){ const c = contractBy(region, key, t); if (c) { const u = toUSD(c.price, c.unit); let lo = toUSD(c.low ?? c.price, c.unit), hi = toUSD(c.high ?? c.price, c.unit); if (c.basis==="estimate" && !(hi>lo)){ lo = u*0.85; hi = u*1.15; } cs[t] = {...c, usd: u, lo, hi}; } }
       if (!Object.keys(cs).length) continue;
       grid[key] = {...cs};
-      if (sp) grid[key].spot = {price: sp.price, unit: sp.unit, usd: toUSD(sp.price, sp.unit), source: sp.source, as_of: sp.as_of, spot:true};
+      if (sp) grid[key].spot = {price: sp.price, unit: sp.unit, usd: toUSD(sp.price, sp.unit), lo: toUSD(sp.price, sp.unit), hi: toUSD(sp.price, sp.unit), source: sp.source, as_of: sp.as_of, spot:true};
     }
     const R = termRatios(region, grid);
     for (const g of Object.values(grid)){
@@ -459,8 +466,20 @@ function ltaGrid(){
       for (let pass=0; pass<2; pass++) for (let i=1;i<TERMS.length;i++){
         const a = TERMS[i-1], b = TERMS[i], rr = R[b];
         if (!rr.r) continue;
-        if (g[a] && !g[b] && (a!=="spot")) g[b] = {fill:true, usd: g[a].usd*rr.r, from:a, ratio:rr.r, n:rr.n};
-        if (g[b] && !g[a] && a!=="spot") g[a] = {fill:true, usd: g[b].usd/rr.r, from:b, ratio:1/rr.r, n:rr.n};
+        if (g[a] && !g[b] && (a!=="spot")) g[b] = {fill:true, usd: g[a].usd*rr.r, lo: g[a].lo*rr.lo, hi: g[a].hi*rr.hi, from:a, ratio:rr.r, rlo:rr.lo, rhi:rr.hi, n:rr.n};
+        if (g[b] && !g[a] && a!=="spot") g[a] = {fill:true, usd: g[b].usd/rr.r, lo: g[b].lo/rr.hi, hi: g[b].hi/rr.lo, from:b, ratio:1/rr.r, rlo:1/rr.hi, rhi:1/rr.lo, n:rr.n};
+      }
+    }
+    // 有同系列新一代（GB300 之于 GB200 等）的实测长协时，优先用「新一代长协 × 两者现货比」推算，比跨型号期限比值更贴近
+    const NEXT = {GB200:"GB300", B200:"B300", H100:"H200", A100:"H100"};
+    for (const [k, g] of Object.entries(grid)){
+      const nk = NEXT[k], ng = nk && grid[nk];
+      if (!ng || !g.spot || !ng.spot) continue;
+      const sr = g.spot.usd / ng.spot.usd;
+      for (const t of ["1y","3y","5y"]){
+        if (!g[t]?.fill || !ng[t] || ng[t].fill) continue;
+        const m = ng[t].usd * sr;
+        g[t] = {fill:true, sib:nk, sr, usd:m, lo: Math.min(ng[t].lo*sr, m*0.85), hi: Math.max(ng[t].hi*sr, m*1.15), sibPrice: ng[t].usd};
       }
     }
     res[region] = {grid, R};
@@ -481,16 +500,20 @@ function renderLTA(){
         const c = g[t];
         if (!c){ tds += `<td class="n miss">—</td>`; continue; }
         const disc = (t!=="spot" && spU) ? c.usd/spU - 1 : null;
-        const dTxt = t==="spot" ? "现货" : disc==null ? (c.fill ? "推算" : BASIS[c.basis]) : (disc<=0 ? "低 "+f2(-disc*100,0)+"%" : "高 "+f2(disc*100,0)+"%");
-        const cny = region==="CN" && FX;
-        const cnyTxt = cny ? "¥"+f2(c.usd*FX)+" · " : "";
-        let tipT, mk = "";
+        const dTxt = t==="spot" ? "现货" : disc==null ? "" : (disc<=0 ? "低 "+f2(-disc*100,0)+"%" : "高 "+f2(disc*100,0)+"%");
+        const isEst = !c.fill && c.basis==="estimate";
+        const ranged = c.fill || isEst;
+        const cnyTxt = region==="CN" && FX ? (ranged ? "¥"+f2(c.lo*FX,1)+"–"+f2(c.hi*FX,1) : "¥"+f2(c.usd*FX)) : "";
+        let tipT, mk = "", cls = "";
         if (t==="spot") tipT = `<b>${esc(key)} ${REGION[region]} 现货</b><br>${esc(c.source)} · ${esc(c.as_of)}`;
-        else if (c.fill){ mk = '<i class="est-mk fill">推</i>';
-          tipT = `<b>${esc(key)} ${REGION[region]} · ${TERM[t]} LTA（推算）</b><br>没有直接数据。= ${TERM[c.from]}价 × ${f2(c.ratio,3)}<br>比值取${REGION[region]}其他型号「${TERM[t>c.from?c.from:t]}→${TERM[t>c.from?t:c.from]}」实测比值的中位数（${c.n} 个样本）`; }
-        else { if (c.basis==="estimate") mk = '<i class="est-mk">估</i>';
-          tipT = `<b>${esc(key)} ${REGION[region]} · ${TERM[t]} LTA</b><br>${BASIS[c.basis]}：${esc(c.method)}${c.low!==c.high&&c.low!=null?`<br>区间 ${usd(toUSD(c.low,c.unit))}–${usd(toUSD(c.high,c.unit))}`:""}<br>${esc(c.source)} · ${esc(c.as_of)} · 置信度 ${esc(c.confidence||"")}`; }
-        tds += `<td class="n${c.fill?" filled":""}" data-tip="${esc(tipT)}"><b>${usd(c.usd)}</b>${mk}<small>${cnyTxt}${dTxt}</small></td>`;
+        else if (c.fill){ mk = '<i class="est-mk fill">推</i>'; cls = " filled";
+          if (c.sib) tipT = `<b>${esc(key)} ${REGION[region]} · ${TERM[t]} LTA（推算）</b><br>区间 ${usd(c.lo)}–${usd(c.hi)}，中值 ${usd(c.usd)}<br>没有直接数据。= ${esc(c.sib)} ${TERM[t]}长协 ${usd(c.sibPrice)} × 两者现货比 ${f2(c.sr,3)}<br>区间取 ±15% 与 ${esc(c.sib)} 自身区间的较宽者`; else
+          tipT = `<b>${esc(key)} ${REGION[region]} · ${TERM[t]} LTA（推算）</b><br>区间 ${usd(c.lo)}–${usd(c.hi)}，中值 ${usd(c.usd)}<br>没有直接数据。= ${TERM[c.from]}价 × ${f2(c.rlo,2)}–${f2(c.rhi,2)}（中位 ${f2(c.ratio,2)}）<br>比值取${REGION[region]}其他型号同一对期限实测比值的最小 / 中位 / 最大（${c.n} 个样本）`; }
+        else { if (isEst){ mk = '<i class="est-mk e">估</i>'; cls = " est"; }
+          tipT = `<b>${esc(key)} ${REGION[region]} · ${TERM[t]} LTA</b>${isEst?"（估算）":""}<br>${BASIS[c.basis]}：${esc(c.method)}${c.hi>c.lo?`<br>区间 ${usd(c.lo)}–${usd(c.hi)}`:""}<br>${esc(c.source)} · ${esc(c.as_of)} · 置信度 ${esc(c.confidence||"")}`; }
+        const main = ranged ? `${usd(c.lo)}–${f2(c.hi)}` : usd(c.usd);
+        const sub = [cnyTxt, ranged ? "中值 "+usd(c.usd) : "", dTxt].filter(Boolean).join(" · ");
+        tds += `<td class="n${cls}" data-tip="${esc(tipT)}"><b>${main}</b>${mk}<small>${sub}</small></td>`;
       }
       rows += `<tr class="${first?"k1":""}"><td>${first?`<b>${esc(key)}</b>`:""}</td><td><span class="tag ${region}">${REGION[region]}</span></td>${tds}</tr>`;
       first = false;
@@ -499,7 +522,7 @@ function renderLTA(){
   $("#lta").innerHTML = rows || "<tr><td colspan='6'>暂无长协数据</td></tr>";
   const rTxt = ["US","CN"].map(rg => REGION[rg] + "：" + ["1y","3y","5y"].map(t => { const r = res[rg].R[t]; return r.r ? `${t==="1y"?"现货":TERM[TERMS[TERMS.indexOf(t)-1]]}→${TERM[t]} ×${f2(r.r,2)}` : null; }).filter(Boolean).join("，")).join("；");
   const hs = C.filter(c => c.channel==="hyperscaler");
-  $("#lta-note").innerHTML = `<i class="est-mk fill">推</i> = 该型号没有这一期限的数据，用同地区其他型号的期限比值推算（${rTxt}）。` +
+  $("#lta-note").innerHTML = `推算用的期限比值中位数：${rTxt}。区间用样本中的最小和最大比值。估算没有给区间时按 ±15% 显示。` +
     (hs.length ? "<br>超大云承诺价（参照，不计入上表）：" + hs.map(c => `${esc(c.gpu_key)} ${TERM[c.term]} ${c.unit.startsWith("CNY")?"¥":"$"}${f2(c.price)}（${esc(c.source)}）`).join("；") : "");
 }
 

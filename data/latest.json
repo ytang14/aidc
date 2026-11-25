@@ -79,7 +79,7 @@
       "url": "https://computecensus.com/gpu-prices/",
       "as_of": "2026-11-16",
       "confidence": "medium",
-      "note": "无 Ornn 成交指数，代表价为 CC 挂牌中位。超大云按需：Azure 27.04（9/14）。neocloud：GMI 8.00。",
+      "note": "无 Ornn 成交指数，代表价为 Compute Census 挂牌中位。同口径交叉：CoreWeave 按需 10.50（$42/4卡，vitna 11/25）、Oracle 16.00、AWS Capacity Block 10.58（预付，iotdigitaltwinplm 11/20）、Azure 按需 27.04。neocloud：GMI 8.00。同一家同时报两种卡时 GB300 更贵（Oracle 16.00 vs 18.00）。",
       "gpu_key": "GB200"
     },
     {
@@ -221,6 +221,20 @@
       "confidence": "low",
       "note": "单卡按需价；Mysteel 11/12 报 560T 风冷整机年签 5.4 万元/台/月。",
       "gpu_key": "910C"
+    },
+    {
+      "region": "US",
+      "gpu": "GB300 NVL72",
+      "gpu_key": "GB300",
+      "price": 15.16,
+      "low": 7.58,
+      "high": 20.0,
+      "unit": "USD/GPU·h",
+      "source": "SAVRN AI Index",
+      "url": "https://savrn.com/ai-index/pricing/gpus/gb300",
+      "as_of": "2026-11-24",
+      "confidence": "medium",
+      "note": "代表价为 SAVRN 按需中位（3 家）。Verda 按需 15.01–15.31（gpueconomy 11/21、cloud-gpus/flopper 11/24），Verda 现货 7.50–7.65；Oracle OCI 按需 18.00；Fireworks 20.00。SAVRN 挂牌中位 9/11 13.31 → 11/24 16.58。"
     }
   ],
   "purchase": [
@@ -696,26 +710,10 @@
       "high": 10.58,
       "unit": "USD/GPU·h",
       "basis": "published",
-      "method": "市场 12 个月预留中位（按需 $13.25）",
+      "method": "市场 12 个月预留中位（按需 $13.25）。注意：数值与 AWS GB200 Capacity Block 预付价 $10.58 完全相同，可能是同一来源被当成市场预留价，待核实",
       "source": "Compute Census",
       "url": "https://computecensus.com/gpu-prices/",
       "as_of": "2026-11-16",
-      "confidence": "medium",
-      "channel": "market"
-    },
-    {
-      "region": "US",
-      "gpu_key": "GB300",
-      "term": "3y",
-      "price": 4.0,
-      "low": 3.5,
-      "high": 5.0,
-      "unit": "USD/GPU·h",
-      "basis": "estimate",
-      "method": "5 年价 × 1.15–1.3 期限溢价；IREN 称短期价约为 5 年价 1.8 倍",
-      "source": "agent 调研汇总",
-      "url": "https://fourweekmba.com/ai-short-gpu-deals-pay-40m-per-mw-1-8x-five-year-contracts/",
-      "as_of": "2026-11-24",
       "confidence": "low",
       "channel": "market"
     },
@@ -942,6 +940,70 @@
       "as_of": "2026-11-24",
       "confidence": "low",
       "channel": "market"
+    },
+    {
+      "region": "US",
+      "gpu_key": "GB300",
+      "term": "1y",
+      "price": 10.66,
+      "low": 10.66,
+      "high": 14.09,
+      "unit": "USD/GPU·h",
+      "channel": "market",
+      "basis": "published",
+      "method": "Verda 12 个月预留，按需 11.59 × (1−8%)（gpurentals 11/06）；cloud-gpus 11/24 列 Verda 预留 14.09（期限未注明）作为上沿",
+      "source": "gpurentals.ai / cloud-gpus.com",
+      "url": "https://gpurentals.ai/gb300-nvl72-pricing/",
+      "as_of": "2026-11-06",
+      "confidence": "medium"
+    },
+    {
+      "region": "US",
+      "gpu_key": "GB300",
+      "term": "3y",
+      "price": 6.25,
+      "low": 4.0,
+      "high": 8.69,
+      "unit": "USD/GPU·h",
+      "channel": "market",
+      "basis": "published",
+      "method": "Astra Intellectus 3 年租约 6.25（30 个机柜，SAVRN 11/24）。区间下沿为 5 年大单价 × 1.15–1.3，上沿为 Verda 24 个月 8.69",
+      "source": "SAVRN AI Index",
+      "url": "https://savrn.com/ai-index/pricing/gpus/gb300",
+      "as_of": "2026-11-24",
+      "confidence": "medium"
+    },
+    {
+      "region": "US",
+      "gpu_key": "GB200",
+      "term": "1y",
+      "price": 17.31,
+      "low": 17.31,
+      "high": 17.31,
+      "unit": "USD/GPU·h",
+      "channel": "hyperscaler",
+      "basis": "published",
+      "method": "Azure ND GB200 v6 1 年预留 ÷ 4",
+      "source": "gpurentals.ai",
+      "url": "https://gpurentals.ai/gb300-nvl72-pricing/",
+      "as_of": "2026-11-06",
+      "confidence": "high"
+    },
+    {
+      "region": "US",
+      "gpu_key": "GB200",
+      "term": "3y",
+      "price": 11.9,
+      "low": 11.9,
+      "high": 11.9,
+      "unit": "USD/GPU·h",
+      "channel": "hyperscaler",
+      "basis": "published",
+      "method": "Azure ND GB200 v6 3 年预留 ÷ 4",
+      "source": "iotdigitaltwinplm / gpurentals.ai",
+      "url": "https://iotdigitaltwinplm.com/gpu-cloud-pricing-november-2026-h100-h200-b200-gb200-and-mi300x-hourly-rates-across-aws-azure-google/",
+      "as_of": "2026-11-20",
+      "confidence": "high"
     }
   ]
 }
