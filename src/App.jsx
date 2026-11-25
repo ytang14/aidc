@@ -33,7 +33,7 @@ export default function App() {
   return (
     <TooltipProvider>
       <header className="sticky top-0 z-30 border-b border-line bg-[color-mix(in_srgb,var(--bg)_85%,transparent)] backdrop-blur">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        <div className="mx-auto flex max-w-[1480px] items-center justify-between gap-4 px-4 py-3 sm:px-6">
           <div className="flex items-center gap-2.5">
             <span className="inline-flex size-8 items-center justify-center rounded-lg bg-ink text-panel"><Activity className="size-4" aria-hidden /></span>
             <div className="leading-tight">
@@ -53,7 +53,7 @@ export default function App() {
           </div>
         </div>
       </header>
-      <main className="mx-auto grid max-w-[1280px] gap-5 px-4 pt-5 pb-16 sm:px-6">
+      <main className="mx-auto grid max-w-[1480px] gap-5 px-4 pt-5 pb-16 sm:px-6">
         {err && <p className="text-bad">数据加载失败：{err}</p>}
         {!M && !err && <p className="text-muted">加载中…</p>}
         {M && <>
