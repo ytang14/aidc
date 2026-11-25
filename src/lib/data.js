@@ -17,10 +17,10 @@ const median = (a) => {
 
 export async function loadAll() {
   const get = (u) => fetch(u, { cache: "no-store" }).then((r) => (r.ok ? r.json() : null)).catch(() => null);
-  const [D, BF, idx] = await Promise.all([get("/data/latest.json"), get("/data/backfill.json"), get("/data/history/index.json")]);
+  const [D, BF, idx, CI] = await Promise.all([get("/data/latest.json"), get("/data/backfill.json"), get("/data/history/index.json"), get("/data/cost_inputs.json")]);
   const days = Array.isArray(idx) ? idx.slice(-120) : [];
   const HIST = (await Promise.all(days.map((d) => get(`/data/history/${d}.json`)))).filter(Boolean);
-  return makeModel(D, BF, HIST);
+  return { ...makeModel(D, BF, HIST), CI: CI || {} };
 }
 
 export function makeModel(D, BF, HIST) {
@@ -151,39 +151,68 @@ export function paybackRows(M, util, opexUSD, mode) {
 }
 
 /* ---------- 持有成本（项目融资口径，每卡时盈亏平衡租金） ----------
-   C   = 每卡资本开支 = 采购价 ÷ 卡数 × (1 + 网络/存储/安装系数)；单卡 PCIe 再 × 1.3 计入主机
-   债务 D = C × (1 − 定金比例)，年利率 r = SOFR + 利差，n 年等额本息：PMT_D = D·r / (1 − (1+r)^−n)
-   股权 E = C × 定金比例，按股权回报率 h 年金回收（h = 0 时即直线折旧 E/n）
-   残值 0（n 年折旧到零）
-   每卡时成本 = (PMT_D + PMT_E + 运营成本 × 8760) ÷ (8760 × 利用率) */
-export const COST_DEFAULTS = { spread: 8.0, down: 30, years: 5, util: 85, opex: 0.3, overhead: 15, equity: 0 };
-const annuity = (P, r, n) => (r === 0 ? P / n : (P * r) / (1 - Math.pow(1 + r, -n)));
+   三档：
+   ① 新购全成本：按今天的采购价新建
+   ② 存量成本：按当年采购价，折旧期内仍要还本付息并回收定金；过了折旧期资本成本为 0
+   ③ 现金成本底线：只算电费、托管、维护（资本已沉没）
+   资本：C = 每卡采购价 × (1 + 网络/存储/安装)；贷款 D = C×(1−定金)，等额本息 PMT(D, SOFR+利差, n)；定金按股权回报率年金回收（0% 即直线折旧）；残值 0
+   运营：功耗 kW × PUE × 8760 × 电价 + kW × 托管 $/kW·月 × 12 + C × 维护%
+   每卡时 = 年成本 ÷ (8760 × 利用率) */
+export const REGION_COST = {
+  US: { power: 0.09, pue: 1.2, colo: 155, maint: 3 },
+  CN: { power: 0.054, pue: 1.2, colo: 40, maint: 3 },
+};
+export const COST_DEFAULTS = { spread: 8.0, down: 30, years: 5, util: 85, overhead: null, equity: 0, now: 2026.9, ...REGION_COST.US, cn: REGION_COST.CN };
+const annuity = (P, r, n) => (n <= 0 ? 0 : r === 0 ? P / n : (P * r) / (1 - Math.pow(1 + r, -n)));
 
-export function holdingCost(M, key, region, a) {
-  const { D, FX } = M;
+function capexRows(M, key, region) {
+  const { D, FX, CI } = M;
+  const ci = region === "US" && CI?.capex_us?.[key];
+  if (ci) return { low: ci.low, mid: ci.mid, high: ci.high, src: ci, nvl: ci.basis === "整柜", confidence: "medium", from: "cost_inputs" };
   const rows = (D.purchase || []).filter((p) => {
     const k = p.gpu && p.gpu !== "other" ? p.gpu : keyOf(p.item);
-    const rg = p.region === "Global" ? "US" : p.region;
-    return k === key && rg === region && p.cards > 0;
-  });
+    return k === key && (p.region === "Global" ? "US" : p.region) === region && p.cards > 0;
+  }).map((p) => ({ p, single: p.cards === 1, card: (p.unit === "CNY" ? (FX ? p.price / FX : null) : p.price) / p.cards * (p.cards === 1 ? 1.3 : 1) })).filter((x) => x.card);
   if (!rows.length) return null;
-  const r = ((D.sofr ?? 4) + a.spread) / 100, n = a.years, h = a.equity / 100, dn = a.down / 100;
-  const per = rows.map((p) => {
-    const single = p.cards === 1;
-    const card = (p.unit === "CNY" ? (FX ? p.price / FX : null) : p.price) / p.cards;
-    if (card == null) return null;
-    const C = card * (1 + a.overhead / 100) * (single ? 1.3 : 1);
-    const pmtD = annuity(C * (1 - dn), r, n), pmtE = annuity(C * dn, h, n);
-    const annual = pmtD + pmtE + a.opex * 8760;
-    return { p, single, card, C, pmtD, pmtE, usd: annual / (8760 * a.util / 100) };
-  }).filter(Boolean).sort((x, y) => x.usd - y.usd);
-  if (!per.length) return null;
-  const vals = per.map((x) => x.usd);
-  const mid = median(vals);
-  let lo = Math.min(...vals), hi = Math.max(...vals);
-  if (!(hi > lo)) { lo = mid * 0.9; hi = mid * 1.1; } // 只有一个报价时给 ±10%
-  const worst = per.some((x) => x.p.confidence === "low" || x.single) ? "low" : "medium";
-  const v = { basis: "estimate", confidence: worst, usd: mid, lo, hi, per, r };
-  v.conf = confOf(v);
-  return v;
+  const v = rows.map((x) => x.card);
+  return { low: Math.min(...v), mid: median(v), high: Math.max(...v), rows, nvl: false,
+    confidence: rows.some((x) => x.p.confidence === "low" || x.single) ? "low" : "medium", from: "purchase" };
+}
+
+export function holdingCost(M, key, region, a) {
+  const cap = capexRows(M, key, region);
+  const rc = region === "CN" ? a.cn : a;
+  const kW = M.CI?.power_kw_per_gpu?.[key]?.v ?? 1.3;
+  const ovh = (a.overhead ?? (cap?.nvl ? M.CI?.overhead?.nvl72 ?? 12 : M.CI?.overhead?.hgx ?? 15)) / 100;
+  const r = ((M.D.sofr ?? 4) + a.spread) / 100, n = a.years, h = a.equity / 100, dn = a.down / 100;
+  const hours = 8760 * a.util / 100;
+  const opexOf = (C) => {
+    const power = kW * rc.pue * 8760 * rc.power, colo = kW * rc.colo * 12, maint = C * rc.maint / 100;
+    return { power, colo, maint, total: power + colo + maint };
+  };
+  const capital = (C) => annuity(C * (1 - dn), r, n) + annuity(C * dn, h, n);
+  const perHour = (card, withCapital = true) => { const C = card * (1 + ovh); const o = opexOf(C); return { C, o, usd: ((withCapital ? capital(C) : 0) + o.total) / hours }; };
+
+  const out = { kW, ovh, r, region };
+  if (cap) {
+    const lo = perHour(cap.low), mid = perHour(cap.mid), hi = perHour(cap.high);
+    out.newc = { basis: "estimate", confidence: cap.confidence, usd: mid.usd, lo: lo.usd, hi: hi.usd, cap, mid };
+    if (!(out.newc.hi > out.newc.lo)) { out.newc.lo = mid.usd * 0.9; out.newc.hi = mid.usd * 1.1; }
+    out.newc.conf = confOf(out.newc);
+  }
+  const vin = region === "US" && M.CI?.vintage_us?.[key];
+  if (vin) {
+    const age = a.now - vin.year, left = n - age;
+    const f = (card) => { const x = perHour(card, left > 0); return x.usd; };
+    out.vint = { basis: "estimate", confidence: "medium", usd: f(vin.mid), lo: f(vin.low), hi: f(vin.high), vin, age, left };
+    out.vint.conf = confOf(out.vint);
+  }
+  // 现金底线：以存量（或新购）设备的维护费计
+  const baseCard = vin ? vin.mid : cap?.mid;
+  if (baseCard) {
+    const x = perHour(baseCard, false);
+    out.cash = { basis: "estimate", confidence: "medium", usd: x.usd, lo: x.usd * 0.85, hi: x.usd * 1.15, o: x.o };
+    out.cash.conf = confOf(out.cash);
+  }
+  return out.newc || out.cash ? out : null;
 }
