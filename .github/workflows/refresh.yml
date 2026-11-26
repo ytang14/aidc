@@ -1,7 +1,7 @@
 name: daily-refresh
 on:
   schedule:
-    - cron: "30 23 * * *"   # 北京时间每天 07:30
+    - cron: "17 22 * * *"   # 北京时间每天 06:17（避开整点和半点，GitHub 定时任务在高峰会延迟数小时）
   workflow_dispatch: {}
 permissions:
   contents: write
