@@ -204,6 +204,13 @@ def carry_over(data: dict, prev: dict) -> dict:
     for p in prev.get("purchase", []):
         if (p["region"], p.get("gpu")) not in have:
             data.setdefault("purchase", []).append(p)
+    have = {(r["region"], r.get("gpu_key")) for r in data.get("rental", [])}
+    for r in prev.get("rental", []):
+        if (r["region"], r.get("gpu_key")) not in have:
+            r = dict(r)
+            if not r.get("note", "").startswith("（沿用上期）"):
+                r["note"] = "（沿用上期）" + r.get("note", "")
+            data.setdefault("rental", []).append(r)
     if not data.get("routes"):
         data["routes"] = prev.get("routes", [])
     return data
