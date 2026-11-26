@@ -1,240 +1,132 @@
 {
-  "updated_at": "2026-11-24T02:20:48+00:00",
-  "fx_usdcny": 6.7111,
-  "fx_as_of": "2026-11-24",
-  "fx_source": "中国外汇交易中心公告（经星岛环球网、FX168 转载，官网未直接核实）",
-  "fx_url": "https://m.stnn.cc/detail/6b04e6408f9d2b19ddc8f4a3.html",
+  "updated_at": "2026-11-26T01:09:57+00:00",
+  "sofr": 3.94,
+  "sofr_as_of": "2026-11-24",
+  "sofr_source": "FRED 转载纽约联储",
+  "sofr_url": "https://fred.stlouisfed.org/series/SOFR",
+  "fx_usdcny": 6.7088,
+  "fx_as_of": "2026-11-25",
+  "fx_source": "新浪转载中国外汇交易中心公告",
+  "fx_url": "https://finance.sina.com.cn/money/forex/rmb/2026-11-25/doc-inizxaup1879081.shtml",
   "headline": [
-    "美国 GPU 租金两类指数背离：Ornn 成交指数 H100 近 1 月 -7.62% 至 $2.91，挂牌中位数（gpurentalprices）11 月均值 $3.51，+6.4%；Blackwell 挂牌价月涨 8–10%。",
-    "英伟达已停止向中国发运 H200，国内 H200 8 卡戴尔整机现货报价 ¥695 万/台，H100 8 卡深圳现货 ¥415 万/台。",
-    "BIS 远程访问规则 11/19 生效：境外数据中心向受限国家总部企业提供超过 1200 万 TPP 算力须许可，并对印尼、马来西亚、新加坡、泰国、巴西新增许可要求。",
-    "人民币中间价 6.7111，较上一交易日上调 9 点；中国租赁价本期改用 Mysteel 数据源，与上期不可直接比较。",
-    "Crusoe 12/1 起提价：H100 +15%、H200 +26%、B300 +10%。"
+    "H100、H200成交价上涨，B200、B300成交价30日跌约7%",
+    "B300挂牌均值$10.24仍涨，按挂牌价锁长期进货有风险",
+    "SpaceX降价传闻可信度低，约5万张H200以约$5重新出租",
+    "Crusoe 12/1起H100从$3.90提价至$4.50",
+    "美国H100折¥21.20，高于国内¥19.14，无倒卖价差"
   ],
   "rental": [
     {
       "region": "US",
       "gpu": "H100 SXM",
-      "price": 2.91,
-      "low": 1.3,
+      "gpu_key": "H100",
+      "price": 3.16,
+      "low": 1.99,
       "high": 12.29,
       "unit": "USD/GPU·h",
-      "source": "Ornn 成交指数",
-      "url": "https://data.ornn.com/markets",
-      "as_of": "2026-11-22",
+      "source": "Ornn",
+      "url": "",
+      "as_of": "2026-11-24",
       "confidence": "high",
-      "note": "日 +0.69%，近 1 月 -7.62%。挂牌口径：gpurentalprices 11 月均值 3.51（+6.4%）；Compute Census 中位 3.90（11/16）；getdeploying 中位 3.95（11/23）。超大云按需：AWS 起 6.88（getdeploying 11/23）；Azure 12.29（CC，10/16）。neocloud：Lium.io 1.30、Massed Compute 2.73、Crusoe 3.90，12/1 起 4.50。",
-      "gpu_key": "H100"
+      "note": "成交指数，较上期+8.6%；地板价Lium（已确认有货）；超大云为Azure按需"
     },
     {
       "region": "US",
       "gpu": "H200",
-      "price": 5.79,
-      "low": 2.09,
-      "high": 13.78,
+      "gpu_key": "H200",
+      "price": 6.53,
+      "low": 2.29,
+      "high": 10.6,
       "unit": "USD/GPU·h",
-      "source": "Ornn 成交指数",
-      "url": "https://data.ornn.com/markets",
-      "as_of": "2026-11-22",
-      "confidence": "high",
-      "note": "日 -3.50%，近 1 月 -0.17%。挂牌口径：gpurentalprices 5.06（+7.2%）；CC 中位 4.80。超大云按需：Azure 13.78（9/21）。neocloud：Beam 2.09、GMI 3.20、Crusoe 4.29，12/1 起 5.40（+26%）。",
-      "gpu_key": "H200"
+      "source": "Ornn",
+      "url": "",
+      "as_of": "2026-11-24",
+      "confidence": "medium",
+      "note": "成交指数，两天涨12.8%波动异常，高于挂牌中位约$5.00，降为medium；地板价Jarvislabs现货；超大云按需区间6.87–10.60"
     },
     {
       "region": "US",
       "gpu": "B200",
-      "price": 9.08,
+      "gpu_key": "B200",
+      "price": 9.07,
       "low": 3.69,
-      "high": 16.11,
+      "high": 14.24,
       "unit": "USD/GPU·h",
-      "source": "Ornn 成交指数",
-      "url": "https://data.ornn.com/markets",
-      "as_of": "2026-11-22",
+      "source": "Ornn",
+      "url": "",
+      "as_of": "2026-11-24",
       "confidence": "high",
-      "note": "近 1 月 -5.32%。挂牌口径：gpurentalprices 8.40（+8.6%）；CC 中位 7.40（较 11/09 +7.2%）。超大云按需：AWS p6-b200 每台 $113.93/h，折每卡 14.24（idlefy，约 10/31）；GCP 16.11（9/28）。neocloud：DeepInfra 3.69。",
-      "gpu_key": "B200"
+      "note": "成交指数，较上期持平，30日-7.1%；地板价DeepInfra；超大云为AWS；SAVRN口径挂牌中位8.25"
     },
     {
       "region": "US",
       "gpu": "B300",
-      "price": 11.46,
+      "gpu_key": "B300",
+      "price": 10.87,
       "low": 5.89,
       "high": 17.8,
       "unit": "USD/GPU·h",
-      "source": "Ornn 成交指数",
-      "url": "https://data.ornn.com/markets",
-      "as_of": "2026-11-22",
+      "source": "Ornn",
+      "url": "",
+      "as_of": "2026-11-24",
       "confidence": "high",
-      "note": "近 1 月 +1.51%。挂牌口径：gpurentalprices 10.16（+10.4%）；CC 中位 9.50。超大云按需：AWS 17.80（CC，11/07）。neocloud：DeepInfra 5.89、Crusoe 8.96，12/1 起 9.90。",
-      "gpu_key": "B300"
+      "note": "成交指数，较上期-5.1%，30日-7.0%；地板价DeepInfra；超大云为AWS"
     },
     {
       "region": "US",
       "gpu": "GB200",
-      "price": 13.25,
-      "low": 8.0,
+      "gpu_key": "GB200",
+      "price": 9.99,
+      "low": 6.22,
       "high": 27.04,
       "unit": "USD/GPU·h",
-      "source": "Compute Census",
-      "url": "https://computecensus.com/gpu-prices/",
-      "as_of": "2026-11-16",
+      "source": "SAVRN",
+      "url": "",
+      "as_of": "2026-11-25",
       "confidence": "medium",
-      "note": "无 Ornn 成交指数，代表价为 Compute Census 挂牌中位。同口径交叉：CoreWeave 按需 10.50（$42/4卡，vitna 11/25）、Oracle 16.00、AWS Capacity Block 10.58（预付，iotdigitaltwinplm 11/20）、Azure 按需 27.04。neocloud：GMI 8.00。同一家同时报两种卡时 GB300 更贵（Oracle 16.00 vs 18.00）。",
-      "gpu_key": "GB200"
+      "note": "挂牌中位（仅neocloud），换源与上期Compute Census中位13.25不可比；地板价Azure现货；超大云为Azure；1年期10.58为AWS预付价"
+    },
+    {
+      "region": "US",
+      "gpu": "GB300",
+      "gpu_key": "GB300",
+      "price": 15.16,
+      "low": 7.58,
+      "high": 18.0,
+      "unit": "USD/GPU·h",
+      "source": "SAVRN",
+      "url": "",
+      "as_of": "2026-11-25",
+      "confidence": "medium",
+      "note": "挂牌中位，较上期持平；地板价Verda现货；最高为Oracle"
     },
     {
       "region": "US",
       "gpu": "A100",
-      "price": 0.99,
+      "gpu_key": "A100",
+      "price": 1.0,
       "low": 0.53,
       "high": 5.07,
       "unit": "USD/GPU·h",
-      "source": "Ornn 成交指数",
-      "url": "https://data.ornn.com/markets",
-      "as_of": "2026-11-22",
+      "source": "Ornn",
+      "url": "",
+      "as_of": "2026-11-24",
       "confidence": "high",
-      "note": "近 1 月 -9.17%。挂牌口径：gpurentalprices 1.93（+2.8%）；CC 中位 1.75。超大云按需：GCP 约 5.07。neocloud：Vast.ai 约 0.53。",
-      "gpu_key": "A100"
+      "note": "成交指数，较上期+1%；地板价Vast.ai；超大云为GCP"
     },
     {
       "region": "US",
       "gpu": "MI300X",
+      "gpu_key": "MI300X",
       "price": 3.19,
       "low": 1.71,
-      "high": 12,
+      "high": 12.0,
       "unit": "USD/GPU·h",
       "source": "gpurentalprices",
-      "url": "https://gpurentalprices.com/gpu-price-index/2026-11",
-      "as_of": "2026-11-23",
+      "url": "",
+      "as_of": "2026-11-25",
       "confidence": "medium",
-      "note": "无 Ornn 成交指数，代表价为 gpurentalprices 挂牌值（+7.2%，同口径 -0.3%）；CC 中位 2.99。超大云按需：Azure 6–12。neocloud：RunPod 2.39、TensorWave 约 1.71。",
-      "gpu_key": "MI300X"
-    },
-    {
-      "region": "CN",
-      "gpu": "H100 80G",
-      "price": 19.14,
-      "low": 12.9,
-      "high": 19.62,
-      "unit": "CNY/卡·h",
-      "source": "Mysteel 算力租赁价格指数",
-      "url": "https://suanli.mysteel.com/",
-      "as_of": "2026-11-19",
-      "confidence": "medium",
-      "note": "单卡按需 19.14，单卡包月 19.62；成渝 10 月单卡按需 12.90（月报）；H100 整机 IB 组网五年闭口 9.5 万元/台/月（11/17、11/19）。Ornn $2.91 按 6.7111 折约 ¥19.53，与国内价格基本持平。本期换用 Mysteel 数据源，不能与上期直接比较涨跌。",
-      "gpu_key": "H100"
-    },
-    {
-      "region": "CN",
-      "gpu": "H800 80G",
-      "price": 12.38,
-      "low": 12.38,
-      "high": 12.38,
-      "unit": "CNY/卡·h",
-      "source": "Mysteel 算力租赁价格指数",
-      "url": "https://suanli.mysteel.com/",
-      "as_of": "2026-11-19",
-      "confidence": "medium",
-      "note": "单卡按需价，无包月报价。",
-      "gpu_key": "H800"
-    },
-    {
-      "region": "CN",
-      "gpu": "H20 96G",
-      "price": 7.64,
-      "low": 6.37,
-      "high": 7.64,
-      "unit": "CNY/卡·h",
-      "source": "Mysteel 算力租赁价格指数",
-      "url": "https://suanli.mysteel.com/",
-      "as_of": "2026-11-19",
-      "confidence": "medium",
-      "note": "单卡按需 7.64，包月 6.37。",
-      "gpu_key": "H20"
-    },
-    {
-      "region": "CN",
-      "gpu": "A100 80G",
-      "price": 8.84,
-      "low": 8.12,
-      "high": 8.84,
-      "unit": "CNY/卡·h",
-      "source": "Mysteel 算力租赁价格指数",
-      "url": "https://suanli.mysteel.com/",
-      "as_of": "2026-11-19",
-      "confidence": "medium",
-      "note": "单卡按需 8.84，包月 8.12。",
-      "gpu_key": "A100"
-    },
-    {
-      "region": "CN",
-      "gpu": "A800 80G",
-      "price": 7.05,
-      "low": 6.52,
-      "high": 7.05,
-      "unit": "CNY/卡·h",
-      "source": "Mysteel 算力租赁价格指数",
-      "url": "https://suanli.mysteel.com/",
-      "as_of": "2026-11-19",
-      "confidence": "medium",
-      "note": "单卡按需 7.05，包月 6.52。",
-      "gpu_key": "A800"
-    },
-    {
-      "region": "CN",
-      "gpu": "RTX 4090 24G",
-      "price": 1.98,
-      "low": 1.77,
-      "high": 1.98,
-      "unit": "CNY/卡·h",
-      "source": "Mysteel 算力租赁价格指数",
-      "url": "https://suanli.mysteel.com/",
-      "as_of": "2026-11-19",
-      "confidence": "medium",
-      "note": "单卡按需 1.98，包月 1.77；4090D 按需 1.88。",
-      "gpu_key": "RTX 4090"
-    },
-    {
-      "region": "CN",
-      "gpu": "昇腾 910B 32G",
-      "price": 0.63,
-      "low": 0.63,
-      "high": 0.63,
-      "unit": "CNY/卡·h",
-      "source": "Mysteel 算力租赁价格指数",
-      "url": "https://suanli.mysteel.com/",
-      "as_of": "2026-11-19",
-      "confidence": "low",
-      "note": "成渝单卡包月价 0.63 元，明显偏低，与整机月租（月租 1.3–1.4 万元/台/月，年签 1.5–1.6 万元/台/月，11/12）不在一个量级。Mysteel 未说明原因，可能对应某个特定规格。",
-      "gpu_key": "910B"
-    },
-    {
-      "region": "CN",
-      "gpu": "昇腾 910C",
-      "price": 3.74,
-      "low": 3.74,
-      "high": 3.74,
-      "unit": "CNY/卡·h",
-      "source": "computeindex",
-      "url": "https://computeindex.net/gpu/shengteng-910c",
-      "as_of": "2026-11-06",
-      "confidence": "low",
-      "note": "单卡按需价；Mysteel 11/12 报 560T 风冷整机年签 5.4 万元/台/月。",
-      "gpu_key": "910C"
-    },
-    {
-      "region": "US",
-      "gpu": "GB300 NVL72",
-      "gpu_key": "GB300",
-      "price": 15.16,
-      "low": 7.58,
-      "high": 20.0,
-      "unit": "USD/GPU·h",
-      "source": "SAVRN AI Index",
-      "url": "https://savrn.com/ai-index/pricing/gpus/gb300",
-      "as_of": "2026-11-24",
-      "confidence": "medium",
-      "note": "代表价为 SAVRN 按需中位（3 家）。Verda 按需 15.01–15.31（gpueconomy 11/21、cloud-gpus/flopper 11/24），Verda 现货 7.50–7.65；Oracle OCI 按需 18.00；Fireworks 20.00。SAVRN 挂牌中位 9/11 13.31 → 11/24 16.58。"
+      "note": "挂牌价，较上期持平；地板价TensorWave；超大云Azure按需区间6–12"
     }
   ],
   "purchase": [
@@ -435,170 +327,23 @@
       "note": "约 $90,000/GPU"
     }
   ],
-  "regulation": [
-    {
-      "date": "2026-11-19",
-      "jurisdiction": "US",
-      "title": "BIS 远程访问规则生效（11/16 公布）",
-      "summary": "新增 EAR §744.24：明知境外数据中心向总部在中国等受限国家的企业提供超过 1200 万 TPP 算力（含间接访问和关联数据中心），须申请许可。数据中心不提供客户信息的，推定出口方“知情”。已有业务须在 90 天内取得许可；商业推荐系统用途可豁免；公众意见期 60 天。规则同时收紧了代工厂和封测厂（OSAT）对 3A090.a 推定的反驳路径。",
-      "impact": "堵住境外云租赁绕道，压缩中国企业海外算力获取渠道，推高国内存量算力价格，同时带来合规与 KYC 需求。",
-      "direction": "tighten",
-      "source": "Skadden",
-      "url": "https://www.skadden.com/insights/publications/2026/11/ai-diffusion-2-bis-introduces-new-export-controls"
-    },
-    {
-      "date": "2026-11-16",
-      "jurisdiction": "US",
-      "title": "新增五国许可，正式废止 AI Diffusion Rule",
-      "summary": "向印尼、马来西亚、新加坡、泰国、巴西出口先进 GPU 一律须许可，受管国家增至约 45 个。收货方或最终用户总部在美国、并按要求报告的，可以豁免。",
-      "impact": "东南亚和巴西的非美资算力供给受限，美资企业在这些国家获得相对优势。",
-      "direction": "tighten",
-      "source": "Skadden",
-      "url": "https://www.skadden.com/insights/publications/2026/11/ai-diffusion-2-bis-introduces-new-export-controls"
-    },
-    {
-      "date": "2026-11-17",
-      "jurisdiction": "US",
-      "title": "英伟达停止向中国发运 H200",
-      "summary": "英伟达在 11/17 财报会上披露，发言人确认已停止发货；第三季度中国 H200 相关收入 24 亿美元。众议员 Mast 称，商务部已批准对华销售超过 87.9 万颗 AI 芯片，但北京没有放行大规模进口。",
-      "impact": "中国新货源断绝，国内存量 Hopper 整机价格走高。",
-      "direction": "tighten",
-      "source": "CNBC（11/19）/ Gizmodo",
-      "url": "https://www.cnbc.com/2026/11/19/nvidia-amd-china-chip-sales-congress.html"
-    },
-    {
-      "date": "2026-11-18",
-      "jurisdiction": "US",
-      "title": "英伟达合同条款限制向受限企业转租",
-      "summary": "客户把超过 50% 的算力租给受限企业，英伟达将停止供货；合作伙伴的非中国客户占比须不低于 51%，并须注册英伟达的追踪系统。",
-      "impact": "限制经第三方转租的算力流向中国，增加合作伙伴的合规成本。",
-      "direction": "tighten",
-      "source": "快科技（新浪财经转载）",
-      "url": "https://finance.sina.com.cn/tech/roll/2026-11-18/doc-inizcmfi4886810.shtml"
-    },
-    {
-      "date": "2026-11-16",
-      "jurisdiction": "US",
-      "title": "美国商务部、司法部声明涉及新加坡 Megaspeed",
-      "summary": "美国商务部、司法部发表声明，涉及新加坡公司 Megaspeed（微博转载，置信度 low）。",
-      "impact": "显示美方加强对新加坡转运和代租渠道的执法。",
-      "direction": "tighten",
-      "source": "微博转载",
-      "url": "https://www.sina.cn/weibo/detail/5366278695161008.html"
-    },
-    {
-      "date": "2026-11-17",
-      "jurisdiction": "CN",
-      "title": "中国商务部表态将反制美方新规",
-      "summary": "中国商务部表示，如美方坚持实施新规，中方将采取反制，具体措施尚未公布。",
-      "impact": "中美博弈存在升级风险，供给的不确定性加大。",
-      "direction": "neutral",
-      "source": "新加坡新闻网",
-      "url": "https://www.xinjiapo.news/news/450543"
-    },
-    {
-      "date": "2026-11-20",
-      "jurisdiction": "US",
-      "title": "贝森特称英伟达芯片出口政策不变",
-      "summary": "贝森特表示英伟达芯片出口政策不变；特朗普称与习近平谈到了黄仁勋。",
-      "impact": "短期内政策维持现状。",
-      "direction": "neutral",
-      "source": "CNBC",
-      "url": "https://www.cnbc.com/2026/11/20/treasury-secretary-scott-bessent.html"
-    },
-    {
-      "date": "2026-11-23",
-      "jurisdiction": "US",
-      "title": "黄仁勋复任英伟达 CEO",
-      "summary": "英伟达 8-K 披露黄仁勋复任 CEO，称董事会参考了美国政府高层意见。",
-      "impact": "对价格和供给无直接影响，需关注后续对华策略。",
-      "direction": "neutral",
-      "source": "SEC 8-K",
-      "url": "https://www.sec.gov/Archives/edgar/data/0001045810/000104581026000090/nov23pressrelease.htm"
-    },
-    {
-      "date": "2026-11",
-      "jurisdiction": "CN",
-      "title": "中国算力政策动态",
-      "summary": "国家数据局将建立词元计量、计费标准；国家数据集团与宁夏签约，推动国家级平台在算力枢纽落地；中国电子信息产业发展研究院称，9 月底我国智能算力 2592 EFLOPS（FP16），同比 +146%（二手来源，置信度 low）。",
-      "impact": "国内算力供给扩张，计费趋向标准化。",
-      "direction": "neutral",
-      "source": "搜狐",
-      "url": "https://www.sohu.com/a/1105341447_121106908"
-    }
-  ],
-  "opportunities": [
-    {
-      "title": "国内存量 Hopper 整机做长租",
-      "detail": "H200 五年闭口月租 14.5 万元/台，60 个月毛租金约 870 万元，约为现货价 695 万元的 1.25 倍；H100 为 9.5 万元/台/月，60 个月约 570 万元，约为现货价 415 万元的 1.37 倍。以上未扣除电力、运维和资金成本。",
-      "basis": "Mysteel H200/H100 整机五年闭口月租及现货报价；英伟达已停止对华发运 H200，新货源断绝。"
-    },
-    {
-      "title": "国产昇腾集群的组网和运维",
-      "detail": "910C 整机 190 万元，年签 5.4 万元/台/月，毛回本约 35 个月。Mysteel 认为 910B 价格已趋于标准化，竞争转向网络互联和运维稳定性。",
-      "basis": "Mysteel 910C 整机价（11/17）与年签月租（11/12）。"
-    },
-    {
-      "title": "美国合规产能与 neocloud 涨价",
-      "detail": "Crusoe 12/1 起提价：H100 +15%、H200 +26%、B300 +10%；Blackwell 挂牌价月涨 8–10%。AWS 的 H100 按需价约为成交指数的 2.4 倍，neocloud 仍有提价空间。在五个新增管控国，美资企业可豁免许可。",
-      "basis": "Crusoe 价目（markaicode 转引）、gpurentalprices 挂牌指数、getdeploying 的 AWS 价格、BIS 五国许可规则。"
-    },
-    {
-      "title": "数据中心 KYC 与许可申请服务",
-      "detail": "规则对不提供客户信息的数据中心推定出口方“知情”，并给出 90 天补许可窗口；英伟达还要求合作伙伴非中国客户占比不低于 51%。客户筛查、算力审计、许可代理都有刚需。",
-      "basis": "BIS §744.24 规则（Skadden）；英伟达合同条款（快科技）。"
-    },
-    {
-      "title": "算力价格对冲",
-      "detail": "H100 成交价 $2.91，挂牌中位 $3.51–3.95，差距很大，且近 1 月两者走势相反。Ornn 指数已上 Bloomberg，并有 ICE 期货合约规格，长约方和 neocloud 可用来对冲基差。",
-      "basis": "Ornn 成交指数，gpurentalprices、Compute Census、getdeploying 的挂牌中位价。"
-    }
-  ],
-  "routes": [
-    {
-      "route": "美国境内采购/转租",
-      "status": "open",
-      "since": "",
-      "note": "BIS 新规不约束美国境内数据中心；Crusoe 等 12/1 提价",
-      "url": "https://www.sidley.com/en/insights/newsupdates/2026/11/new-export-controls-on-advanced-chips-close-remote-compute-access-loopholes-five-key-takeaways"
-    },
-    {
-      "route": "海外机房 → 中资客户",
-      "status": "closed",
-      "since": "2026-11-19",
-      "note": "超 1200 万 TPP 需许可，无例外；存量业务宽限到 2027-02-17",
-      "url": "https://www.wilmerhale.com/en/insights/client-alerts/20261117-us-government-restricts-remote-access-to-advanced-ai-chips-and-formally-rescinds-the-ai-diffusion-rule"
-    },
-    {
-      "route": "英伟达 H200 → 中国大陆",
-      "status": "closed",
-      "since": "2026-11-17",
-      "note": "英伟达停发；北京也未放行大规模进口",
-      "url": "https://news.qq.com/rain/a/20261118A05V4Q00"
-    },
-    {
-      "route": "东南亚四国 + 巴西 进货",
-      "status": "license",
-      "since": "2026-11-19",
-      "note": "印尼/马来/新加坡/泰国/巴西需许可，美资企业按月报告可豁免",
-      "url": "https://www.sidley.com/en/insights/newsupdates/2026/11/new-export-controls-on-advanced-chips-close-remote-compute-access-loopholes-five-key-takeaways"
-    },
-    {
-      "route": "经第三方转租给受限企业",
-      "status": "closed",
-      "since": "2026-11-18",
-      "note": "英伟达合同：转租超 50% 给受限企业即断供",
-      "url": "https://finance.sina.com.cn/tech/roll/2026-11-18/doc-inizcmfi4886810.shtml"
-    },
-    {
-      "route": "中国境内国产卡（昇腾）",
-      "status": "open",
-      "since": "",
-      "note": "国资项目要求国产芯片；西部部分省份电费补贴最高 50%（二手来源）",
-      "url": "https://www.huxiu.com/article/4907264.html"
-    }
-  ],
   "contracts": [
+    {
+      "region": "US",
+      "gpu_key": "GB200",
+      "term": "1y",
+      "price": 10.58,
+      "low": 10.58,
+      "high": 10.58,
+      "unit": "USD/GPU·h",
+      "channel": "hyperscaler",
+      "basis": "published",
+      "method": "直接采用 AWS 1 年期预付价，已确认是超大云承诺价，本期把渠道从市场改为超大云；价格沿用上期，未重新核实",
+      "source": "AWS 预付价（沿用上期）",
+      "url": "",
+      "as_of": "2026-11-26",
+      "confidence": "medium"
+    },
     {
       "region": "US",
       "gpu_key": "H100",
@@ -1018,22 +763,6 @@
     {
       "region": "US",
       "gpu_key": "GB200",
-      "term": "1y",
-      "price": 17.31,
-      "low": 17.31,
-      "high": 17.31,
-      "unit": "USD/GPU·h",
-      "channel": "hyperscaler",
-      "basis": "published",
-      "method": "Azure ND GB200 v6 1 年预留 ÷ 4",
-      "source": "gpurentals.ai",
-      "url": "https://gpurentals.ai/gb300-nvl72-pricing/",
-      "as_of": "2026-11-06",
-      "confidence": "high"
-    },
-    {
-      "region": "US",
-      "gpu_key": "GB200",
       "term": "3y",
       "price": 11.9,
       "low": 11.9,
@@ -1048,8 +777,87 @@
       "confidence": "high"
     }
   ],
-  "sofr": 3.92,
-  "sofr_as_of": "2026-11-23",
-  "sofr_source": "sofrrate.com（转载纽约联储）",
-  "sofr_url": "https://www.sofrrate.com/"
+  "regulation": [
+    {
+      "date": "2026-11-19",
+      "jurisdiction": "US",
+      "title": "BIS 远程访问规则：海外机房向中资客户提供算力须许可【沿用上期】",
+      "summary": "自 11/19 起，海外机房向中资客户提供算力须申请许可；存量业务宽限期至约 2027-02-17。本期未查到 11/24 之后的新规，因额度限制未完整排查，可能有遗漏。",
+      "impact": "海外机房向中资客户倒卖算力的通道关闭，客户筛查（KYC）和许可代理需求在宽限期内集中；对美国租赁价的具体影响笔记未量化。",
+      "direction": "tighten",
+      "source": "BIS（沿用上期条目，笔记未附链接）",
+      "url": ""
+    }
+  ],
+  "routes": [
+    {
+      "route": "美国境内",
+      "status": "open",
+      "since": "",
+      "note": "开放，状态未变",
+      "url": ""
+    },
+    {
+      "route": "海外机房 → 中资客户",
+      "status": "closed",
+      "since": "2026-11-19",
+      "note": "11/19 起须许可，存量宽限至约2027-02-17",
+      "url": ""
+    },
+    {
+      "route": "H200 → 中国大陆",
+      "status": "closed",
+      "since": "",
+      "note": "关闭，状态未变",
+      "url": ""
+    },
+    {
+      "route": "东南亚四国 + 巴西进货",
+      "status": "license",
+      "since": "",
+      "note": "需许可，状态未变",
+      "url": ""
+    },
+    {
+      "route": "第三方转租给受限企业",
+      "status": "closed",
+      "since": "",
+      "note": "关闭，状态未变",
+      "url": ""
+    },
+    {
+      "route": "国产卡（昇腾）",
+      "status": "open",
+      "since": "",
+      "note": "开放，进入通道无限制",
+      "url": ""
+    }
+  ],
+  "opportunities": [
+    {
+      "title": "美国 H200 低价承接、短期转租",
+      "detail": "1 年预留价 $3.40，成交价 $6.53，利用率 52% 即可保本；若成交价被打到 $5，保本利用率升至 68%，因此只签短约。H200 两天涨 12.8% 属异常波动，可信度 medium；SpaceX 相关传闻称约 5 万张 H200 正以约 $5 重新出租，价格可能回落。回本按毛租金计算，未扣电力、机房和资金成本。",
+      "basis": "H200 Ornn 成交价 6.53（11/24）、1 年预留价 3.40、挂牌中位约 5.00；SemiAnalysis 转述的约 $5 转租价"
+    },
+    {
+      "title": "Blackwell 先对冲再签长约",
+      "detail": "HGX B300 整机 $54.5 万，按 $10–10.87 满载 8.6–9.3 个月回本，利用率 70% 时 12–13 个月。B200、B300 成交价 30 日约跌 7%，但 B300 挂牌均值仍涨，按挂牌价锁长期进货有高进低出风险；剩余期限价格风险可用 Ornn 在 ICE 上的期货对冲。回本按毛租金计算。",
+      "basis": "B300 Ornn 成交价 10.87（30 日 -7.0%）、B200 30 日 -7.1%、B300 挂牌均值 $10.24（较 10 月 +11.3%）、HGX B300 整机 $54.5 万"
+    },
+    {
+      "title": "国内存量 Hopper 靠资产增值",
+      "detail": "H200 整机约 48 个月回本，H100 约 44 个月，收益主要来自断供后整机升值而非租金。美国 H100 成交价折合 ¥21.20，高于国内按需价 ¥19.14，向国内倒卖没有价差空间。国内数据为上期数据，需复核。",
+      "basis": "人民币中间价 6.7088（11/25）、美国 H100 成交价 3.16、国内 H100 按需价 ¥19.14【沿用上期】"
+    },
+    {
+      "title": "昇腾 910C 集群",
+      "detail": "约 35 个月回本，进入通道没有限制，但每台卡数未披露。数据为上期数据。",
+      "basis": "国产卡（昇腾）通道开放；回本周期约 35 个月【沿用上期】"
+    },
+    {
+      "title": "KYC 与许可申请服务",
+      "detail": "BIS 远程访问规则给存量业务的宽限期到约 2027-02-17，客户筛查和许可代理需求在这期间最集中。",
+      "basis": "海外机房 → 中资客户 11/19 起须许可，宽限期至约 2027-02-17"
+    }
+  ]
 }
