@@ -164,19 +164,49 @@ def research(client: anthropic.Anthropic, previous: str) -> str:
     sys.exit("research step did not finish")
 
 
+# 一次性结构化的 JSON Schema 语法太大会被 API 拒绝（compiled grammar is too large），按板块分三次调用
+PARTS = [
+    ["updated_at", "sofr", "sofr_as_of", "sofr_source", "sofr_url", "fx_usdcny", "fx_as_of", "fx_source", "fx_url", "headline", "rental"],
+    ["purchase", "contracts"],
+    ["regulation", "routes", "opportunities"],
+]
+
+
 def structure(client: anthropic.Anthropic, notes: str) -> dict:
     now = dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds")
-    with client.messages.stream(
-        model=MODEL, max_tokens=32000,
-        output_config={"effort": "low", "format": {"type": "json_schema", "schema": SCHEMA}},
-        messages=[{"role": "user", "content":
-                   f"把下面的研究笔记整理成 JSON。updated_at 用 {now}。只收录笔记里有来源的数字，"
-                   f"不要新增数字。文字用中文。\n\n{notes}"}],
-    ) as stream:
-        resp = stream.get_final_message()
-    if resp.stop_reason == "refusal":
-        sys.exit("structure step refused")
-    return json.loads(next(b.text for b in resp.content if b.type == "text"))
+    out: dict = {}
+    for keys in PARTS:
+        sub = {"type": "object", "additionalProperties": False, "required": keys,
+               "properties": {k: SCHEMA["properties"][k] for k in keys}}
+        with client.messages.stream(
+            model=MODEL, max_tokens=32000,
+            output_config={"effort": "low", "format": {"type": "json_schema", "schema": sub}},
+            messages=[{"role": "user", "content":
+                       f"把下面研究笔记中与这些字段相关的内容整理成 JSON：{', '.join(keys)}。updated_at 用 {now}。"
+                       f"只收录笔记里有来源的数字，不要新增数字。文字用中文。\n\n{notes}"}],
+        ) as stream:
+            resp = stream.get_final_message()
+        if resp.stop_reason == "refusal":
+            sys.exit("structure step refused")
+        out.update(json.loads(next(b.text for b in resp.content if b.type == "text")))
+    return out
+
+
+def carry_over(data: dict, prev: dict) -> dict:
+    """新数据缺失的长协条目和采购条目沿用上一期，避免看板上的长协和成本列变空。"""
+    if not prev:
+        return data
+    seen = {(c["region"], c["gpu_key"], c["term"], c["channel"]) for c in data.get("contracts", [])}
+    for c in prev.get("contracts", []):
+        if (c["region"], c["gpu_key"], c["term"], c.get("channel")) not in seen:
+            data.setdefault("contracts", []).append(c)
+    have = {(p["region"], p.get("gpu")) for p in data.get("purchase", [])}
+    for p in prev.get("purchase", []):
+        if (p["region"], p.get("gpu")) not in have:
+            data.setdefault("purchase", []).append(p)
+    if not data.get("routes"):
+        data["routes"] = prev.get("routes", [])
+    return data
 
 
 def main() -> None:
@@ -186,6 +216,10 @@ def main() -> None:
     client = anthropic.Anthropic()
     notes = research(client, previous[:60000])
     data = structure(client, notes)
+    try:
+        data = carry_over(data, json.loads(previous))
+    except ValueError:
+        pass
     if len(data["rental"]) < 3:
         sys.exit("too few price rows; keeping previous data")  # 防止坏数据覆盖
     text = json.dumps(data, ensure_ascii=False, indent=2)
