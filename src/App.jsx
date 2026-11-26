@@ -64,7 +64,7 @@ export default function App() {
           <Payback M={M} />
           <div className="grid gap-5 lg:grid-cols-2"><Routes M={M} /><Headlines M={M} /></div>
           <Details M={M} />
-          <footer className="pt-2 text-center text-xs text-muted">每个数字都标注了来源和日期 · 每天北京时间 07:30 自动刷新</footer>
+          <footer className="pt-2 text-center text-xs text-muted">每个数字都标注了来源和日期 · 每天北京时间 06:17 自动刷新</footer>
         </>}
       </main>
     </TooltipProvider>

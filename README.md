@@ -6,7 +6,7 @@
 
 - 前端：Vite + React + Tailwind CSS v4，组件用 Radix UI 原语（shadcn/ui 同款写法），图标 lucide-react，图表为手写 SVG。
 - 数据：`public/data/latest.json`（当天）、`public/data/history/`（每日存档）、`public/data/backfill.json`（历史走势回填）。
-- 刷新：GitHub Actions 每天北京时间 07:30 运行 `refresh.py`（Claude + 联网检索 → 结构化 JSON），提交 `public/data/`，Vercel 自动重新构建部署。
+- 刷新：GitHub Actions 每天北京时间 06:17 运行 `refresh.py`（Claude + 联网检索 → 结构化 JSON），提交 `public/data/`，Vercel 自动重新构建部署。
 - 访问控制：`middleware.js`（Vercel Routing Middleware）对整站做 Basic Auth，凭据来自 Vercel 环境变量 `DASH_USER` / `DASH_PASS`。页面带 noindex。
 
 ```
