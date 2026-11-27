@@ -6,6 +6,8 @@ const BLOCKED = [/^\/src\//, /^\/package(-lock)?\.json$/, /^\/refresh\.py$/, /^\
 
 export default function middleware(request) {
   const url = new URL(request.url);
+  // 定时接口自己校验 CRON_SECRET，不走 Basic Auth
+  if (url.pathname === "/api/refresh") return;
   if (BLOCKED.some((re) => re.test(url.pathname))) {
     return new Response("Not found", { status: 404 });
   }

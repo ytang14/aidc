@@ -1,7 +1,6 @@
 name: daily-refresh
 on:
-  schedule:
-    - cron: "17 22 * * *"   # 北京时间每天 06:17（避开整点和半点，GitHub 定时任务在高峰会延迟数小时）
+  # 定时由 Vercel Cron 调用 /api/refresh 触发（GitHub 自带定时不可靠）
   workflow_dispatch: {}
 permissions:
   contents: write

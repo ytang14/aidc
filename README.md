@@ -6,7 +6,7 @@
 
 - 前端：Vite + React + Tailwind CSS v4，组件用 Radix UI 原语（shadcn/ui 同款写法），图标 lucide-react，图表为手写 SVG。
 - 数据：`public/data/latest.json`（当天）、`public/data/history/`（每日存档）、`public/data/backfill.json`（历史走势回填）。
-- 刷新：GitHub Actions 每天北京时间 06:17 运行 `refresh.py`（Claude + 联网检索 → 结构化 JSON），提交 `public/data/`，Vercel 自动重新构建部署。
+- 刷新：Vercel Cron 每天 22:17 UTC（北京时间约 06:17，Hobby 计划在该小时内任意时刻触发）调用 `api/refresh.js`，它用 `GH_DISPATCH_TOKEN` 触发 GitHub Actions 的 `daily-refresh`，运行 `refresh.py`（Claude + 联网检索 → 结构化 JSON），提交 `public/data/`，Vercel 自动重新构建部署。GitHub 自带定时已停用（延迟、漏跑），也可在 Actions 页手动运行。
 - 访问控制：`middleware.js`（Vercel Routing Middleware）对整站做 Basic Auth，凭据来自 Vercel 环境变量 `DASH_USER` / `DASH_PASS`。页面带 noindex。
 
 ```
@@ -36,4 +36,4 @@ npm run build      # 输出到 dist/
 
 ## 部署（Vercel）
 
-`vercel.json` 指定了 Vite 构建（`npm run build` → `dist/`），不依赖项目设置里的 Framework 选项。环境变量：`DASH_USER`、`DASH_PASS`。GitHub 仓库 Secrets 需要 `ANTHROPIC_API_KEY`。
+`vercel.json` 指定了 Vite 构建（`npm run build` → `dist/`），不依赖项目设置里的 Framework 选项。环境变量：`DASH_USER`、`DASH_PASS`、`CRON_SECRET`（随机长字符串）、`GH_DISPATCH_TOKEN`（GitHub 细粒度令牌，仅 ytang14/aidc，Actions: Read and write）。GitHub 仓库 Secrets 需要 `ANTHROPIC_API_KEY`。
